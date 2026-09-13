@@ -89,7 +89,7 @@ class DoctorCommand extends AbstractCommand
             }
 
             if (!$present) {
-                $this->line($output, $table, 'missing — run "nix db:migrate up"', false);
+                $this->line($output, $table, 'missing — run "naf db:migrate up"', false);
             }
         }
 
@@ -102,7 +102,7 @@ class DoctorCommand extends AbstractCommand
             $count   = count($clients);
 
             $this->line($output, 'registered clients', $count === 0
-                ? 'none — run "nix oauth:client:create"'
+                ? 'none — run "naf oauth:client:create"'
                 : (string) $count, $count > 0);
 
             // Not a fault — a rotation in progress is exactly what it should look
@@ -137,7 +137,7 @@ class DoctorCommand extends AbstractCommand
 
         if (!$keys->has()) {
             // Not a fault: an OAuth2 server is a complete thing to be.
-            $output->writeLine('  - ' . str_pad('OpenID Connect', 22) . 'off — no signing key. Run "nix oauth:server:setup" to enable it.');
+            $output->writeLine('  - ' . str_pad('OpenID Connect', 22) . 'off — no signing key. Run "naf oauth:server:setup" to enable it.');
 
             return;
         }

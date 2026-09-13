@@ -55,7 +55,7 @@ final class KeyCommandsTest extends CommandTestCase
         $output   = $this->execute(new SetupCommand())->output;
         $registry = app()->container()->get(CommandRegistry::class);
 
-        preg_match_all('/nix ([a-z0-9:._-]+(?: [a-z0-9:._-]+)*)/', $output, $matches);
+        preg_match_all('/naf ([a-z0-9:._-]+(?: [a-z0-9:._-]+)*)/', $output, $matches);
 
         self::assertNotSame([], $matches[1], 'the instructions name no commands at all');
 
@@ -71,7 +71,7 @@ final class KeyCommandsTest extends CommandTestCase
             self::assertSame(
                 array_values(array_unique($words)),
                 $words,
-                'repeated argument in: nix ' . $invocation,
+                'repeated argument in: naf ' . $invocation,
             );
         }
     }

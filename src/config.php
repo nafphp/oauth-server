@@ -88,7 +88,7 @@ return [
          * Where the ID token signing keys live. Null resolves to
          * BASE_PATH/storage/oauth/keys.
          *
-         * Created once with "nix oauth:keys:generate" and kept. Until one exists
+         * Created once with "naf oauth:keys:generate" and kept. Until one exists
          * this is an OAuth2 server: no ID tokens, and the discovery document says
          * so rather than advertising something it cannot answer.
          */

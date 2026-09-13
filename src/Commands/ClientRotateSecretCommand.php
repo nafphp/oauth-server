@@ -44,7 +44,7 @@ class ClientRotateSecretCommand extends AbstractCommand
         $clientId = $input->getArgument('client');
 
         if ($clientId === null || trim($clientId) === '') {
-            $output->writeLine('Name the client: nix ' . self::NAME . ' <client-id>', 'error');
+            $output->writeLine('Name the client: naf ' . self::NAME . ' <client-id>', 'error');
 
             return self::ERROR;
         }

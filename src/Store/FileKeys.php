@@ -40,7 +40,7 @@ final class FileKeys implements KeyStoreInterface
 
         if ($files === []) {
             throw new RuntimeException(
-                'No signing key exists yet. Run "nix oauth:keys:generate" once before issuing ID tokens.'
+                'No signing key exists yet. Run "naf oauth:keys:generate" once before issuing ID tokens.'
             );
         }
 

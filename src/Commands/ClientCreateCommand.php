@@ -37,7 +37,7 @@ class ClientCreateCommand extends AbstractCommand
         $name = $input->getArgument('name');
 
         if ($name === null || trim($name) === '') {
-            $output->writeLine('Give the application a name: nix ' . self::NAME . ' "Acme Intranet" --redirect=…', 'error');
+            $output->writeLine('Give the application a name: naf ' . self::NAME . ' "Acme Intranet" --redirect=…', 'error');
 
             return self::ERROR;
         }

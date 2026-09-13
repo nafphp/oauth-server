@@ -98,7 +98,7 @@ final readonly class Authorization
             if (!$this->signs && in_array('openid', $granted, true)) {
                 throw OAuthError::redirect(
                     'invalid_scope',
-                    'This server has no signing key and cannot issue ID tokens. Run "nix oauth:keys:generate".',
+                    'This server has no signing key and cannot issue ID tokens. Run "naf oauth:keys:generate".',
                 );
             }
 

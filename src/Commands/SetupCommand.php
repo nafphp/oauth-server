@@ -49,9 +49,9 @@ class SetupCommand extends AbstractCommand
 
         $output->writeEmptyLine();
         $output->writeLine('  Still to do:');
-        $output->writeLine('    vendor/bin/nix db:migrate up              the OAuth schema, if you have not');
-        $output->writeLine('    vendor/bin/nix oauth:client:create "…"    register an application');
-        $output->writeLine('    vendor/bin/nix oauth:server:doctor        check the rest');
+        $output->writeLine('    vendor/bin/naf db:migrate up              the OAuth schema, if you have not');
+        $output->writeLine('    vendor/bin/naf oauth:client:create "…"    register an application');
+        $output->writeLine('    vendor/bin/naf oauth:server:doctor        check the rest');
         $output->writeEmptyLine();
 
         return self::SUCCESS;

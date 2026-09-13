@@ -49,7 +49,7 @@ class KeysGenerateCommand extends AbstractCommand
 
         if ($rotating) {
             $output->writeLine('  The previous key stays published so tokens signed with it still verify.');
-            $output->writeLine('  Remove it with "nix oauth:keys:prune" once those tokens have expired.');
+            $output->writeLine('  Remove it with "naf oauth:keys:prune" once those tokens have expired.');
             $output->writeEmptyLine();
         }
 

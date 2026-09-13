@@ -10,7 +10,7 @@ use Tests\CommandTestCase;
 use function Naf\app;
 
 /**
- * What "nix oauth:server:doctor" says about an installation.
+ * What "naf oauth:server:doctor" says about an installation.
  *
  * A sign-in service that is almost set up is worse than one that is plainly not:
  * the failures land in front of people trying to sign in, mid-redirect, where
