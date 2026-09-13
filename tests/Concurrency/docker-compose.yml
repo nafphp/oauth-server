@@ -1,0 +1,37 @@
+# Databases for the concurrency checks.
+#
+# SQLite serialises write transactions, which hides interleavings the other two
+# allow — so "green on SQLite" says nothing about MySQL or PostgreSQL. Run these
+# before a release.
+#
+#   docker compose -f tests/Concurrency/docker-compose.yml up -d
+#   php tests/Concurrency/concurrency.php pgsql 16
+#   php tests/Concurrency/replay_race.php mysql 40
+#   docker compose -f tests/Concurrency/docker-compose.yml down -v
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: nixphp-oauth-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: oauth
+    ports:
+      - "13306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-psecret"]
+      interval: 2s
+      retries: 30
+
+  postgres:
+    image: postgres:17
+    container_name: nixphp-oauth-pg
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: oauth
+    ports:
+      - "15432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "oauth"]
+      interval: 2s
+      retries: 30

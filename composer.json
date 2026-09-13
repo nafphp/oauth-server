@@ -1,0 +1,98 @@
+{
+  "name": "nixphp/oauth-server",
+  "description": "Run your application as an OAuth2 authorization server and protect its APIs.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "type": "nixphp-plugin",
+  "authors": [
+    {
+      "name": "Flo Knapp",
+      "email": "office@florianknapp.de"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "NixPHP\\OAuth\\Server\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../auth",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../session",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../database",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../cli",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../form",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "../view",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*",
+    "nixphp/framework": "^0.1.0",
+    "nixphp/auth": "dev-main",
+    "nixphp/session": "dev-main as 0.1.99",
+    "psr/http-message": "^2.0",
+    "nixphp/form": "dev-main",
+    "firebase/php-jwt": "^7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.1",
+    "phpstan/phpstan": "^2.1",
+    "nixphp/database": "dev-main",
+    "nixphp/cli": "dev-main",
+    "nixphp/view": "dev-main"
+  },
+  "suggest": {
+    "nixphp/database": "Install the OAuth schema as a migration.",
+    "nixphp/cli": "Generate keys and register client applications.",
+    "nixphp/view": "Override the consent screen by shadowing its view."
+  },
+  "scripts": {
+    "test": "phpunit --colors=always",
+    "analyse": "phpstan analyse --memory-limit=256M"
+  }
+}
