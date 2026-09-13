@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Model;
+namespace Naf\OAuth\Server\Model;
 
-use NixPHP\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Exception\OAuthError;
 
 /**
  * A registered client application.

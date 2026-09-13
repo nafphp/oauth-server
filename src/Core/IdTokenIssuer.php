@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 use Firebase\JWT\JWT;
-use NixPHP\OAuth\Server\Store\KeyStoreInterface;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 
 /**
  * The one thing this server signs.

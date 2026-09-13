@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Commands;
+namespace Naf\OAuth\Server\Commands;
 
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\OAuth\Server\Store\KeyStoreInterface;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 use Throwable;
-use function NixPHP\app;
+use function Naf\app;
 
 /**
  * Put in place everything this server needs and cannot invent for itself.

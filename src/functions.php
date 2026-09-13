@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server;
+namespace Naf\OAuth\Server;
 
-use NixPHP\OAuth\Server\Core\ResourceServer;
-use NixPHP\OAuth\Server\Core\TokenContext;
-use function NixPHP\app;
+use Naf\OAuth\Server\Core\ResourceServer;
+use Naf\OAuth\Server\Core\TokenContext;
+use function Naf\app;
 
 /** What the bearer token on this request allows. Never the browser session. */
 function token(): TokenContext

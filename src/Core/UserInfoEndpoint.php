@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Store\TokenStoreInterface;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Store\TokenStoreInterface;
 
 /**
  * What this server will say about the person behind an access token.

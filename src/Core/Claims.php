@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 use Closure;
-use NixPHP\Auth\Identity\IdentityInterface;
-use NixPHP\Auth\Identity\UserInterface;
+use Naf\Auth\Identity\IdentityInterface;
+use Naf\Auth\Identity\UserInterface;
 
 /**
  * What this server is willing to say about a person, filtered by what they agreed to.

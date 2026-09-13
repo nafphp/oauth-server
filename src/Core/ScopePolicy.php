@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 /**
  * What the scopes this server offers mean, and what they require.

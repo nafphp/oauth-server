@@ -6,11 +6,11 @@ namespace Tests\Unit;
 
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
-use NixPHP\Auth\Identity\IdentityInterface;
-use NixPHP\OAuth\Server\Core\{Claims, ClientAuthenticator, Discovery, IdTokenIssuer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens};
-use NixPHP\OAuth\Server\Store\{FileKeys, PdoTokens};
+use Naf\Auth\Identity\IdentityInterface;
+use Naf\OAuth\Server\Core\{Claims, ClientAuthenticator, Discovery, IdTokenIssuer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens};
+use Naf\OAuth\Server\Store\{FileKeys, PdoTokens};
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\{Account, Schema};
@@ -33,7 +33,7 @@ final class OpenIdTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->path = sys_get_temp_dir() . '/nixphp-oidc-' . bin2hex(random_bytes(6));
+        $this->path = sys_get_temp_dir() . '/naf-oidc-' . bin2hex(random_bytes(6));
         $this->keys = new FileKeys($this->path);
 
         // Generating RSA keys is slow; one real key is reused across the tests

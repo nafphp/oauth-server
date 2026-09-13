@@ -16,17 +16,17 @@ declare(strict_types=1);
 
 require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\OAuth\Server\Migrations\OAuthServerMigration;
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client};
-use NixPHP\OAuth\Server\Store\{PdoClients, PdoTokens};
+use Naf\Auth\Support\PasswordHasher;
+use Naf\OAuth\Server\Migrations\OAuthServerMigration;
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Store\{PdoClients, PdoTokens};
 
 const VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
 const REDIRECT = 'https://intranet.example.test/callback';
 
 $target = $argv[1] ?? 'sqlite';
 $rounds = (int) ($argv[2] ?? 40);
-$dir    = sys_get_temp_dir() . '/nixphp-race-' . bin2hex(random_bytes(4));
+$dir    = sys_get_temp_dir() . '/naf-race-' . bin2hex(random_bytes(4));
 @mkdir($dir, 0700, true);
 
 function connect(string $target): PDO
@@ -36,7 +36,7 @@ function connect(string $target): PDO
             PDO::ATTR_EMULATE_PREPARES => false,
         ]),
         'pgsql' => new PDO('pgsql:host=127.0.0.1;port=15432;dbname=oauth', 'postgres', 'secret'),
-        default => new PDO('sqlite:' . sys_get_temp_dir() . '/nixphp-race.sqlite'),
+        default => new PDO('sqlite:' . sys_get_temp_dir() . '/naf-race.sqlite'),
     };
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     if ($target === 'sqlite') { $pdo->exec('PRAGMA busy_timeout = 5000'); }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Exception;
+namespace Naf\OAuth\Server\Exception;
 
 use RuntimeException;
 use Throwable;

@@ -1,16 +1,16 @@
 <div align="center">
 
-![NixPHP](https://nixphp.github.io/docs/assets/nixphp-logo-small-square.png)
+![NAF](assets/naf-logo-small-square.png)
 
-[![NixPHP OAuth Server Plugin](https://github.com/nixphp/oauth-server/actions/workflows/php.yml/badge.svg)](https://github.com/nixphp/oauth-server/actions/workflows/php.yml)
+[![NAF OAuth Server Plugin](https://github.com/nafphp/oauth-server/actions/workflows/php.yml/badge.svg)](https://github.com/nafphp/oauth-server/actions/workflows/php.yml)
 
 </div>
 
-[← Back to NixPHP](https://github.com/nixphp/framework)
+[← Back to NAF](https://github.com/nafphp/framework)
 
 ---
 
-# nixphp/oauth-server
+# naf/oauth-server
 
 > **Be the place people sign in with — an OAuth2 authorization server and OpenID Connect provider, on the accounts you already have.**
 
@@ -21,7 +21,7 @@ token()->requireScope('posts.write');
 That is the whole of what an API endpoint has to say. The authorization, the consent, the
 tokens and their revocation are already wired.
 
-> 🧩 Part of the official NixPHP plugin collection.
+> 🧩 Part of the official NAF plugin collection.
 > Install it when other applications should be able to act on behalf of your users.
 
 ---
@@ -30,7 +30,7 @@ tokens and their revocation are already wired.
 
 An OAuth2 authorization server, and an OpenID Connect provider on top of it, built on the
 accounts you already have. It does not introduce a second user model, a second login, or a
-second idea of what somebody is allowed to do — it uses `nixphp/auth` for all three.
+second idea of what somebody is allowed to do — it uses `naf/auth` for all three.
 
 | Grant | |
 | --- | --- |
@@ -49,13 +49,13 @@ Deliberately not offered: the Implicit and Password grants, wildcard redirect UR
 ## 📥 Installation
 
 ```bash
-composer require nixphp/oauth-server nixphp/database nixphp/cli
+composer require naf/oauth-server naf/database naf/cli
 vendor/bin/nix db:migrate up
 vendor/bin/nix oauth:server:setup     # creates the signing key, says what is left
 vendor/bin/nix oauth:server:doctor    # checks the rest before anybody tries
 ```
 
-`nixphp/auth`, `nixphp/session` and `nixphp/form` come with it — the accounts, the sign-in that
+`naf/auth`, `naf/session` and `naf/form` come with it — the accounts, the sign-in that
 consent is bound to, and the CSRF token on the consent form.
 
 The key is what signs ID tokens, and it has to exist **before** anybody asks for OpenID
@@ -64,7 +64,7 @@ rather than accepted and then answered without an ID token. Skip the key and thi
 server — a complete thing to be, and the discovery document says exactly that instead of
 advertising what it cannot answer.
 
-A PDO connection is found on its own when `nixphp/database` is configured. Nothing to bind.
+A PDO connection is found on its own when `naf/database` is configured. Nothing to bind.
 
 ---
 
@@ -193,7 +193,7 @@ working on a day nobody chose.
 ## Protecting an API
 
 ```php
-use function NixPHP\OAuth\Server\token;
+use function Naf\OAuth\Server\token;
 
 public function store(): ResponseInterface
 {
@@ -311,7 +311,7 @@ went away stops verifying.
 
 ## The same user contract
 
-This server signs people in with `nixphp/auth`, using the very model your application already
+This server signs people in with `naf/auth`, using the very model your application already
 uses — `UserInterface`, `isActive()`, `getProfile()`. There is no second user table, no second
 login and no second idea of what somebody may do. A suspended account stops working here at the
 same moment it stops working everywhere else.
@@ -353,11 +353,11 @@ it as a JWT — a statement addressed to one application, which that application
 is a credential this server looks up, so a signature would buy nothing and cost revocation.
 
 **Nothing bearable is stored in the clear.** Codes and tokens are SHA-256 hashes; client secrets
-go through the same `PasswordHasher` `nixphp/auth` uses for people, so raising the hashing cost
+go through the same `PasswordHasher` `naf/auth` uses for people, so raising the hashing cost
 raises it here too.
 
 **A person is two columns, never one.** `user_provider` and `user_id` are the same pair
-`nixphp/auth` persists in a session, because account ids are only unique within their source.
+`naf/auth` persists in a session, because account ids are only unique within their source.
 What the outside world sees is a subject: random, assigned once, never reused, and revealing
 neither.
 
@@ -406,9 +406,6 @@ Two things it takes care of that are easy to get wrong in a harness of your own:
 temporary directory rather than into the repository — `oauth:keys:generate` writes real files —
 and every service the plugin registers is reset between tests, so a case cannot pass on what the
 one before it left behind.
-
-The `repositories` block points at the sibling plugins in this workspace while they are
-unreleased; it goes away, along with the `dev-main` constraints, once they are published.
 
 Concurrency is checked with real forked processes against SQLite, MySQL 8.4 and PostgreSQL 17 —
 see [tests/Concurrency](tests/Concurrency). PHPUnit does not run those; they need databases, and

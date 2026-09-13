@@ -30,7 +30,7 @@ return [
      * The public base URL of this application. It becomes the OIDC issuer once
      * that ships, so it has to stay stable for the life of the service.
      *
-     * Shared with nixphp/oauth-client, which derives its redirect URIs from it.
+     * Shared with naf/oauth-client, which derives its redirect URIs from it.
      */
     'public_url' => null,
 

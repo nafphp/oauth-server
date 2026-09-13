@@ -2,36 +2,36 @@
 
 declare(strict_types=1);
 
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\CLI\Support\CommandRegistry;
-use NixPHP\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand,
+use Naf\Auth\Support\PasswordHasher;
+use Naf\CLI\Support\CommandRegistry;
+use Naf\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand,
     DoctorCommand, KeysGenerateCommand, KeysPruneCommand, SetupCommand};
-use NixPHP\Database\Core\Database;
-use NixPHP\Database\Support\MigrationRegistry;
-use NixPHP\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
+use Naf\Database\Core\Database;
+use Naf\Database\Support\MigrationRegistry;
+use Naf\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
     ResourceServer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
-use NixPHP\OAuth\Server\Exception\ConfigurationException;
-use NixPHP\OAuth\Server\Store\{ClientStoreInterface, FileKeys, KeyStoreInterface,
+use Naf\OAuth\Server\Exception\ConfigurationException;
+use Naf\OAuth\Server\Store\{ClientStoreInterface, FileKeys, KeyStoreInterface,
     PdoClients, PdoTokens, TokenStoreInterface};
 use Psr\Http\Message\ServerRequestInterface;
-use function NixPHP\app;
-use function NixPHP\Auth\auth;
-use function NixPHP\config;
+use function Naf\app;
+use function Naf\Auth\auth;
+use function Naf\config;
 
 $container = app()->container();
 
 /**
- * The adapters need a PDO connection, and nixphp/database registers a Database.
+ * The adapters need a PDO connection, and naf/database registers a Database.
  * Bridging that here means an ordinary installation resolves on its own instead
  * of asking for a container binding nobody would think to write.
  */
-if (!$container->has(PDO::class) && app()->hasPlugin('nixphp/database')) {
+if (!$container->has(PDO::class) && app()->hasPlugin('naf/database')) {
     $container->set(PDO::class, static function () use ($container): PDO {
         $connection = $container->get(Database::class)?->getConnection();
 
         if (!$connection instanceof PDO) {
             throw new ConfigurationException(
-                'nixphp/database is installed but has no connection configured, so there is no '
+                'naf/database is installed but has no connection configured, so there is no '
                 . PDO::class . ' to work with. Configure "database", or bind your own connection.'
             );
         }
@@ -46,7 +46,7 @@ if (!$container->has(ClientStoreInterface::class)) {
     $container->set(ClientStoreInterface::class, static fn(): ClientStoreInterface => new PdoClients(
         $container->get(PDO::class),
 
-        // The hasher nixphp/auth registers, so an application that raises its
+        // The hasher naf/auth registers, so an application that raises its
         // hashing cost raises it for client secrets too.
         $container->get(PasswordHasher::class),
     ));
@@ -78,7 +78,7 @@ if (!$container->has(Authorization::class)) {
         policy: $container->get(ScopePolicy::class),
 
         // A scope is offered only to somebody who holds the permission behind it,
-        // answered by nixphp/auth about whoever is signed in right now.
+        // answered by naf/auth about whoever is signed in right now.
         holdsPermission: static fn(string $permission): bool => auth()->can($permission),
         consentTtl: (int) config('oauth_server:consent_ttl', 600),
         codeTtl: (int) config('oauth_server:code_ttl', 60),
@@ -185,11 +185,11 @@ if (!$container->has(ResourceServer::class)) {
     ));
 }
 
-if (app()->hasPlugin('nixphp/database')) {
+if (app()->hasPlugin('naf/database')) {
     MigrationRegistry::addPath(__DIR__ . '/src/Migrations');
 }
 
-if (app()->hasPlugin('nixphp/cli')) {
+if (app()->hasPlugin('naf/cli')) {
     $commands = $container->get(CommandRegistry::class);
     $commands->add(ClientCreateCommand::class);
     $commands->add(ClientListCommand::class);

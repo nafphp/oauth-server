@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Core\{Authorization, ScopePolicy};
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\Client;
-use NixPHP\OAuth\Server\Store\PdoTokens;
+use Naf\OAuth\Server\Core\{Authorization, ScopePolicy};
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Store\PdoTokens;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\Schema;
@@ -222,7 +222,7 @@ final class AuthorizationTest extends TestCase
     }
 
     /** @param array<string, string|null> $overrides */
-    private function begin(array $overrides = [], ?Client $client = null): \NixPHP\OAuth\Server\Core\Consent
+    private function begin(array $overrides = [], ?Client $client = null): \Naf\OAuth\Server\Core\Consent
     {
         $query = $overrides + [
             'client_id'             => ($client ?? $this->client)->id,

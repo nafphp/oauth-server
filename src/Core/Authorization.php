@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 use Closure;
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\AuthorizationRequest;
-use NixPHP\OAuth\Server\Store\{ClientStoreInterface, TokenStoreInterface};
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Store\{ClientStoreInterface, TokenStoreInterface};
 
 /**
  * The authorization endpoint: check the request, ask the person, issue the code.

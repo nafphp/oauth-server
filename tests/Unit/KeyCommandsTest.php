@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\CLI\Support\CommandRegistry;
-use NixPHP\OAuth\Server\Commands\{KeysGenerateCommand, KeysPruneCommand, SetupCommand};
-use NixPHP\OAuth\Server\Store\KeyStoreInterface;
+use Naf\CLI\Support\CommandRegistry;
+use Naf\OAuth\Server\Commands\{KeysGenerateCommand, KeysPruneCommand, SetupCommand};
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 use Tests\CommandTestCase;
-use function NixPHP\app;
+use function Naf\app;
 
 /**
  * Setting the server up, and rotating what it signs with.

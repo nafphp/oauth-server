@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use NixPHP\Auth\Auth;
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\Core\Config;
-use NixPHP\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
+use Naf\Auth\Auth;
+use Naf\Auth\Support\PasswordHasher;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\Core\Config;
+use Naf\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
     ResourceServer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
-use NixPHP\OAuth\Server\Migrations\OAuthServerMigration;
-use NixPHP\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface, TokenStoreInterface};
+use Naf\OAuth\Server\Migrations\OAuthServerMigration;
+use Naf\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface, TokenStoreInterface};
 use PDO;
 use PHPUnit\Framework\TestCase;
-use function NixPHP\app;
+use function Naf\app;
 
 /**
  * Runs a command the way the console runs it.
@@ -49,7 +49,7 @@ abstract class CommandTestCase extends TestCase
             define('BASE_PATH', dirname(__DIR__) . '/tests/Fixtures');
         }
 
-        $this->keyPath = sys_get_temp_dir() . '/nixphp-oauth-server-cmd-' . bin2hex(random_bytes(6));
+        $this->keyPath = sys_get_temp_dir() . '/naf-oauth-server-cmd-' . bin2hex(random_bytes(6));
 
         $this->reset();
     }
@@ -100,10 +100,10 @@ abstract class CommandTestCase extends TestCase
 
     protected function boot(): void
     {
-        // The client store asks the container for the hasher nixphp/auth
+        // The client store asks the container for the hasher naf/auth
         // registers, so that bootstrap has to have run. Both guard their
         // factories, so re-running is a no-op.
-        require dirname(__DIR__) . '/vendor/nixphp/auth/bootstrap.php';
+        require dirname(__DIR__) . '/vendor/naf/auth/bootstrap.php';
         require dirname(__DIR__) . '/bootstrap.php';
     }
 
@@ -140,7 +140,7 @@ abstract class CommandTestCase extends TestCase
 
     /**
      * @param list<string> $grants
-     * @return array{0: \NixPHP\OAuth\Server\Model\Client, 1: string|null}
+     * @return array{0: \Naf\OAuth\Server\Model\Client, 1: string|null}
      */
     protected function register(
         string $name = 'Acme Intranet',

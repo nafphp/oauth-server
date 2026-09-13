@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 /** What a consent screen needs, and nothing that could be posted back and believed. */
 final readonly class Consent

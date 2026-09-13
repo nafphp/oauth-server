@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Commands\DoctorCommand;
-use NixPHP\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Commands\DoctorCommand;
+use Naf\OAuth\Server\Store\ClientStoreInterface;
 use Tests\CommandTestCase;
-use function NixPHP\app;
+use function Naf\app;
 
 /**
  * What "nix oauth:server:doctor" says about an installation.
@@ -102,7 +102,7 @@ final class DoctorCommandTest extends CommandTestCase
     public function testASigningKeyTurnsOpenIdConnectOn(): void
     {
         $this->healthy();
-        app()->container()->get(\NixPHP\OAuth\Server\Store\KeyStoreInterface::class)->generate();
+        app()->container()->get(\Naf\OAuth\Server\Store\KeyStoreInterface::class)->generate();
 
         $result = $this->execute(new DoctorCommand());
 

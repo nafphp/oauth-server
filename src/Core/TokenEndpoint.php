@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\{Client, IssuedTokens};
-use NixPHP\OAuth\Server\Store\TokenStoreInterface;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\{Client, IssuedTokens};
+use Naf\OAuth\Server\Store\TokenStoreInterface;
 
 /**
  * The token, revocation and introspection endpoints.

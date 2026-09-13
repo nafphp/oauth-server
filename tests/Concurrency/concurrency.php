@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Concurrency check for nixphp/oauth-server against a real database.
+ * Concurrency check for naf/oauth-server against a real database.
  *
  * Real processes, not a simulation: N children fork, each opens its own
  * connection, and all of them wait on a wall-clock barrier before touching the
@@ -14,18 +14,18 @@ declare(strict_types=1);
 
 require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Migrations\OAuthServerMigration;
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client};
-use NixPHP\OAuth\Server\Store\{PdoClients, PdoTokens};
+use Naf\Auth\Support\PasswordHasher;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Migrations\OAuthServerMigration;
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Store\{PdoClients, PdoTokens};
 
 const VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
 const REDIRECT = 'https://intranet.example.test/callback';
 
 $target  = $argv[1] ?? 'sqlite';
 $workers = (int) ($argv[2] ?? 8);
-$results = sys_get_temp_dir() . '/nixphp-conc-' . bin2hex(random_bytes(4));
+$results = sys_get_temp_dir() . '/naf-conc-' . bin2hex(random_bytes(4));
 @mkdir($results, 0700, true);
 
 function connect(string $target): PDO
@@ -38,7 +38,7 @@ function connect(string $target): PDO
             PDO::ATTR_EMULATE_PREPARES => false,
         ]),
         'pgsql'  => new PDO('pgsql:host=127.0.0.1;port=15432;dbname=oauth', 'postgres', 'secret'),
-        default  => new PDO('sqlite:' . sys_get_temp_dir() . '/nixphp-conc.sqlite'),
+        default  => new PDO('sqlite:' . sys_get_temp_dir() . '/naf-conc.sqlite'),
     };
 
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

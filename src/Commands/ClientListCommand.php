@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Commands;
+namespace Naf\OAuth\Server\Commands;
 
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\OAuth\Server\Store\ClientStoreInterface;
-use function NixPHP\app;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use function Naf\app;
 
 /** Which applications may ask people to sign in with this server. */
 class ClientListCommand extends AbstractCommand

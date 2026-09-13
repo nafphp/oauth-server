@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Commands;
+namespace Naf\OAuth\Server\Commands;
 
 use InvalidArgumentException;
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\OAuth\Server\Store\ClientStoreInterface;
-use function NixPHP\app;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use function Naf\app;
 
 /**
  * Register an application.

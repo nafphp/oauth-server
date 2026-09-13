@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures;
 
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\OAuth\Server\Migrations\OAuthServerMigration;
-use NixPHP\OAuth\Server\Model\Client;
-use NixPHP\OAuth\Server\Store\PdoClients;
+use Naf\Auth\Support\PasswordHasher;
+use Naf\OAuth\Server\Migrations\OAuthServerMigration;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Store\PdoClients;
 use PDO;
 
 /** A real database with the real schema, because that is where the guarantees live. */

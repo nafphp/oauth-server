@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Controllers;
+namespace Naf\OAuth\Server\Controllers;
 
-use NixPHP\OAuth\Server\Core\{Discovery, UserInfoEndpoint};
-use NixPHP\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Core\{Discovery, UserInfoEndpoint};
+use Naf\OAuth\Server\Exception\OAuthError;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function NixPHP\app;
-use function NixPHP\json;
+use function Naf\app;
+use function Naf\json;
 
 /**
  * The three endpoints OpenID Connect adds: who this is, what this server does,

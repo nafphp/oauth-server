@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 use Closure;
-use NixPHP\Auth\Identity\IdentityInterface;
-use NixPHP\OAuth\Server\Exception\OAuthError;
+use Naf\Auth\Identity\IdentityInterface;
+use Naf\OAuth\Server\Exception\OAuthError;
 
 /**
  * The one place this server asks whether somebody may still sign in.
@@ -17,7 +17,7 @@ use NixPHP\OAuth\Server\Exception\OAuthError;
  * once. Scattering that question meant answering it in some places and not
  * others, and the places that skipped it were the ones that assert identity.
  *
- * The answer comes from nixphp/auth, through the same reload a session
+ * The answer comes from naf/auth, through the same reload a session
  * restoration uses. Whether an account is suspended is the account source's
  * decision, exactly as it is for a browser login: a provider that keeps
  * answering for a locked user is a provider that keeps them signed in too.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Model;
+namespace Naf\OAuth\Server\Model;
 
 /**
  * An authorization request that has already been checked, waiting for consent.

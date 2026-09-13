@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\Client;
-use NixPHP\OAuth\Server\Store\ClientStoreInterface;
+use Naf\Auth\Support\PasswordHasher;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Store\ClientStoreInterface;
 
 /**
  * Which client is making this request, and whether it has proved it.
  *
- * Secrets are checked with the same PasswordHasher nixphp/auth uses for people,
+ * Secrets are checked with the same PasswordHasher naf/auth uses for people,
  * which is also what makes an unknown client and a wrong secret cost the same.
  *
  * Both forms RFC 6749 §2.3.1 describes are accepted, but never both at once: a

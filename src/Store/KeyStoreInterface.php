@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Store;
+namespace Naf\OAuth\Server\Store;
 
-use NixPHP\OAuth\Server\Model\SigningKey;
+use Naf\OAuth\Server\Model\SigningKey;
 
 /**
  * The keys this server signs with, and the ones it still publishes.

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Commands;
+namespace Naf\OAuth\Server\Commands;
 
-use NixPHP\Core\Route;
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\OAuth\Server\Core\ScopePolicy;
-use NixPHP\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface};
+use Naf\Core\Route;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\OAuth\Server\Core\ScopePolicy;
+use Naf\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface};
 use PDO;
 use Throwable;
-use function NixPHP\app;
-use function NixPHP\config;
+use function Naf\app;
+use function Naf\config;
 
 /**
  * What has to be true before this server can answer anybody.

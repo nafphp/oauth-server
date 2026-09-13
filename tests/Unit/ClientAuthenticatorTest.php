@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Core\ClientAuthenticator;
-use NixPHP\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Exception\OAuthError;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\Schema;

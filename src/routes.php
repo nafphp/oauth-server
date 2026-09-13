@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use NixPHP\OAuth\Server\Controllers\{AuthorizeController, OpenIdController, TokenController};
-use function NixPHP\config;
-use function NixPHP\route;
+use Naf\OAuth\Server\Controllers\{AuthorizeController, OpenIdController, TokenController};
+use function Naf\config;
+use function Naf\route;
 
 // Turn these off with oauth_server:routes => false to own the URLs yourself.
 // The endpoints behind them stay available through the container.

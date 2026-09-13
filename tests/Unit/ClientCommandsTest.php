@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand};
-use NixPHP\OAuth\Server\Core\ClientAuthenticator;
-use NixPHP\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand};
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Store\ClientStoreInterface;
 use Tests\CommandTestCase;
-use function NixPHP\app;
+use function Naf\app;
 
 /**
  * Registering an application, listing what is registered, and changing a secret.
@@ -194,7 +194,7 @@ final class ClientCommandsTest extends CommandTestCase
         $this->assertSucceeded($result);
         self::assertStringContainsString('stopped working just now', $result->output);
 
-        $this->expectException(\NixPHP\OAuth\Server\Exception\OAuthError::class);
+        $this->expectException(\Naf\OAuth\Server\Exception\OAuthError::class);
         app()->container()->get(ClientAuthenticator::class)
             ->authenticate(['client_id' => $client->id, 'client_secret' => (string) $old], null);
     }

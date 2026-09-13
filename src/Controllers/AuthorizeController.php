@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Controllers;
+namespace Naf\OAuth\Server\Controllers;
 
-use NixPHP\Core\Route;
-use NixPHP\OAuth\Server\Support\Views;
-use NixPHP\OAuth\Server\Core\Authorization;
-use NixPHP\OAuth\Server\Exception\OAuthError;
+use Naf\Core\Route;
+use Naf\OAuth\Server\Support\Views;
+use Naf\OAuth\Server\Core\Authorization;
+use Naf\OAuth\Server\Exception\OAuthError;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function NixPHP\app;
-use function NixPHP\Auth\auth;
-use function NixPHP\config;
-use function NixPHP\param;
-use function NixPHP\redirect;
-use function NixPHP\response;
+use function Naf\app;
+use function Naf\Auth\auth;
+use function Naf\config;
+use function Naf\param;
+use function Naf\redirect;
+use function Naf\response;
 
 /**
  * Where a person is asked whether an application may act for them.
@@ -60,7 +60,7 @@ final class AuthorizeController
 
     public function decide(): ResponseInterface
     {
-        // The CSRF token on this form is checked by nixphp/form before we get here;
+        // The CSRF token on this form is checked by naf/form before we get here;
         // this endpoint is deliberately not among the exempt ones.
         auth()->requireLogin();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Model;
+namespace Naf\OAuth\Server\Model;
 
 /** A live access token, as the resource server sees it. */
 final readonly class TokenRecord

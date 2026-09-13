@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Core\{ResourceServer, ScopePolicy};
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client};
-use NixPHP\OAuth\Server\Store\PdoTokens;
+use Naf\OAuth\Server\Core\{ResourceServer, ScopePolicy};
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Store\PdoTokens;
 use Nyholm\Psr7\ServerRequest;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -94,7 +94,7 @@ final class ResourceServerTest extends TestCase
         self::assertNull($this->tokens->inspect($first->accessToken), 'the replaced token is gone');
     }
 
-    private function context(string $token, string $audience = ''): \NixPHP\OAuth\Server\Core\TokenContext
+    private function context(string $token, string $audience = ''): \Naf\OAuth\Server\Core\TokenContext
     {
         return (new ResourceServer(
             $this->tokens,

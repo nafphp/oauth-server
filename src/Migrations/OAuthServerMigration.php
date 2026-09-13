@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Migrations;
+namespace Naf\OAuth\Server\Migrations;
 
-use NixPHP\Database\Core\AbstractMigration;
+use Naf\Database\Core\AbstractMigration;
 use PDO;
 use PDOException;
 
@@ -29,7 +29,7 @@ use PDOException;
  *   each other — which they otherwise do, and a replayed token then leaves a
  *   successor alive that the detection never saw.
  * - **A person is two columns, never one.** `user_provider` and `user_id` are
- *   the same pair nixphp/auth persists in a session, because account ids are
+ *   the same pair naf/auth persists in a session, because account ids are
  *   only unique within their source. What the outside world sees instead is a
  *   subject from oauth_subjects, which reveals neither.
  */

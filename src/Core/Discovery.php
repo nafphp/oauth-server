@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
-use NixPHP\OAuth\Server\Store\KeyStoreInterface;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 
 /**
  * The metadata a relying party reads instead of being configured by hand.

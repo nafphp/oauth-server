@@ -12,7 +12,7 @@
 services:
   mysql:
     image: mysql:8.4
-    container_name: nixphp-oauth-mysql
+    container_name: naf-oauth-mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: oauth
@@ -25,7 +25,7 @@ services:
 
   postgres:
     image: postgres:17
-    container_name: nixphp-oauth-pg
+    container_name: naf-oauth-pg
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: oauth

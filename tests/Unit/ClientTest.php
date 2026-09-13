@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use InvalidArgumentException;
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\Client;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\Schema;
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Core;
+namespace Naf\OAuth\Server\Core;
 
 use Closure;
-use NixPHP\Auth\Auth;
-use NixPHP\Auth\Exceptions\{ForbiddenException, UnauthenticatedException};
-use NixPHP\Auth\Identity\IdentityInterface;
-use NixPHP\OAuth\Server\Model\TokenRecord;
+use Naf\Auth\Auth;
+use Naf\Auth\Exceptions\{ForbiddenException, UnauthenticatedException};
+use Naf\Auth\Identity\IdentityInterface;
+use Naf\OAuth\Server\Model\TokenRecord;
 
 /**
  * What the bearer token on this request allows.
@@ -76,7 +76,7 @@ final class TokenContext
         return true;
     }
 
-    /** Your own model, reloaded through nixphp/auth. Null for an application token. */
+    /** Your own model, reloaded through naf/auth. Null for an application token. */
     public function user(): ?IdentityInterface
     {
         if ($this->loaded) {
@@ -151,7 +151,7 @@ final class TokenContext
     }
 
     /**
-     * The permission question is answered by nixphp/auth, on an instance with no
+     * The permission question is answered by naf/auth, on an instance with no
      * store and no providers: it holds one identity for the length of this
      * request and can reach nothing else. Same implementation as everywhere in
      * the application, none of the session it usually comes with.

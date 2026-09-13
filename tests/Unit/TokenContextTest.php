@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\Auth\Exceptions\{ForbiddenException, UnauthenticatedException};
-use NixPHP\Auth\Identity\IdentityInterface;
-use NixPHP\OAuth\Server\Core\{ScopePolicy, TokenContext};
-use NixPHP\OAuth\Server\Model\TokenRecord;
+use Naf\Auth\Exceptions\{ForbiddenException, UnauthenticatedException};
+use Naf\Auth\Identity\IdentityInterface;
+use Naf\OAuth\Server\Core\{ScopePolicy, TokenContext};
+use Naf\OAuth\Server\Model\TokenRecord;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\Account;
 

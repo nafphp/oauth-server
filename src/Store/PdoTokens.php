@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Store;
+namespace Naf\OAuth\Server\Store;
 
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
 use PDO;
 use PDOStatement;
 use RuntimeException;

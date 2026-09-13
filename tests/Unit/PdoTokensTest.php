@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use NixPHP\OAuth\Server\Exception\OAuthError;
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client};
-use NixPHP\OAuth\Server\Store\PdoTokens;
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Store\PdoTokens;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\Schema;
@@ -262,7 +262,7 @@ final class PdoTokensTest extends TestCase
 
     public function testASecondConnectionSeesTheCodeIsSpent(): void
     {
-        $file = sys_get_temp_dir() . '/nixphp-oauth-server-' . bin2hex(random_bytes(6)) . '.sqlite';
+        $file = sys_get_temp_dir() . '/naf-oauth-server-' . bin2hex(random_bytes(6)) . '.sqlite';
 
         try {
             $a      = Schema::migrate(Schema::connect($file));

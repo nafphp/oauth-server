@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Store;
+namespace Naf\OAuth\Server\Store;
 
-use NixPHP\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
+use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
 
 /**
  * Everything the server issues, and the operations that have to be indivisible.
@@ -25,7 +25,7 @@ interface TokenStoreInterface
     /**
      * Take it back out, for the same browser and the same person who left it.
      *
-     * @throws \NixPHP\OAuth\Server\Exception\OAuthError when it is gone, expired, or somebody else's.
+     * @throws \Naf\OAuth\Server\Exception\OAuthError when it is gone, expired, or somebody else's.
      */
     public function consumeRequest(string $id, string $sessionId, string $userProvider, string $userId): AuthorizationRequest;
 

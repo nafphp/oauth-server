@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Commands;
+namespace Naf\OAuth\Server\Commands;
 
-use NixPHP\CLI\Core\{AbstractCommand, Input, Output};
-use NixPHP\OAuth\Server\Store\KeyStoreInterface;
-use function NixPHP\app;
-use function NixPHP\config;
+use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\OAuth\Server\Store\KeyStoreInterface;
+use function Naf\app;
+use function Naf\config;
 
 /**
  * Stop publishing keys that nothing can still be signed with.

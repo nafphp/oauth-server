@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NixPHP\OAuth\Server\Store;
+namespace Naf\OAuth\Server\Store;
 
 use InvalidArgumentException;
-use NixPHP\Auth\Support\PasswordHasher;
-use NixPHP\OAuth\Server\Model\Client;
+use Naf\Auth\Support\PasswordHasher;
+use Naf\OAuth\Server\Model\Client;
 use PDO;
 use PDOStatement;
 use RuntimeException;
@@ -15,7 +15,7 @@ use RuntimeException;
  * Client registrations in an existing PDO connection.
  *
  * Secrets are stored the way passwords are, through the very same hasher
- * nixphp/auth uses for people — so an application that raises its hashing cost
+ * naf/auth uses for people — so an application that raises its hashing cost
  * raises it here too, rather than having a second, quietly different policy for
  * machine credentials. The value handed to whoever registered the application is
  * the only copy that ever exists. Redirect URIs are kept one per line rather than comma-separated,
