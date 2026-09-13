@@ -207,30 +207,50 @@ final class PdoTokens implements TokenStoreInterface
         $hash = self::hash($code);
         $now  = time();
 
+        // Read outside the transaction, on purpose: see claimFamily().
+        $family = $this->one('SELECT family_id FROM oauth_codes WHERE code_hash = :hash', ['hash' => $hash]);
+
+        if (!is_array($family)) {
+            throw OAuthError::refuse('invalid_grant', 'That authorization code is not usable.');
+        }
+
         $this->connection->beginTransaction();
 
         try {
+            if (!$this->claimFamily((string) $family['family_id'])) {
+                $this->connection->rollBack();
+
+                throw OAuthError::refuse('invalid_grant', 'That authorization has been withdrawn.');
+            }
+
+            /** @var array<string, mixed> $row */
+            $row = $this->one('SELECT * FROM oauth_codes WHERE code_hash = :hash', ['hash' => $hash]);
+
             $claimed = $this->execute(
                 'UPDATE oauth_codes SET used_at = :now'
                 . ' WHERE code_hash = :hash AND used_at IS NULL AND expires_at > :deadline',
                 ['now' => (string) $now, 'deadline' => (string) $now, 'hash' => $hash],
             )->rowCount();
 
-            $row = $this->one('SELECT * FROM oauth_codes WHERE code_hash = :hash', ['hash' => $hash]);
-
             if ($claimed !== 1) {
-                $this->connection->rollBack();
+                $spent = $this->one(
+                    'SELECT used_at FROM oauth_codes WHERE code_hash = :hash',
+                    ['hash' => $hash],
+                );
 
-                if (is_array($row) && $row['used_at'] !== null) {
+                if (is_array($spent) && $spent['used_at'] !== null) {
                     // Presented twice. Whatever the first use produced is no longer
-                    // trustworthy either, so the whole family goes.
+                    // trustworthy either, so the whole family goes — committed here
+                    // rather than in a transaction of its own.
                     $this->revokeFamily((string) $row['family_id']);
+                    $this->connection->commit();
+                } else {
+                    $this->connection->rollBack();
                 }
 
                 throw OAuthError::refuse('invalid_grant', 'That authorization code is not usable.');
             }
 
-            /** @var array<string, mixed> $row */
             $mismatch = !hash_equals((string) $row['client_id'], $client->id)
                 || !hash_equals((string) $row['code_challenge'], self::challenge($verifier))
                 || ($redirectUri !== null && !hash_equals((string) $row['redirect_uri'], $redirectUri));
@@ -242,8 +262,6 @@ final class PdoTokens implements TokenStoreInterface
 
                 throw OAuthError::refuse('invalid_grant', 'That authorization code is not usable.');
             }
-
-            $this->claimFamily((string) $row['family_id']);
 
             $tokens = $this->issue(
                 clientId: $client->id,
@@ -299,37 +317,58 @@ final class PdoTokens implements TokenStoreInterface
         $hash = self::hash($refreshToken);
         $now  = time();
 
+        // Read outside the transaction, on purpose: see claimFamily().
+        $family = $this->one('SELECT family_id FROM oauth_refresh_tokens WHERE token_hash = :hash', ['hash' => $hash]);
+
+        if (!is_array($family)) {
+            throw OAuthError::refuse('invalid_grant', 'That refresh token is not usable.');
+        }
+
         $this->connection->beginTransaction();
 
         try {
+            if (!$this->claimFamily((string) $family['family_id'])) {
+                $this->connection->rollBack();
+
+                throw OAuthError::refuse('invalid_grant', 'That authorization has been withdrawn.');
+            }
+
+            /** @var array<string, mixed> $row */
+            $row = $this->one('SELECT * FROM oauth_refresh_tokens WHERE token_hash = :hash', ['hash' => $hash]);
+
             $claimed = $this->execute(
                 'UPDATE oauth_refresh_tokens SET used_at = :now'
                 . ' WHERE token_hash = :hash AND used_at IS NULL AND revoked_at IS NULL AND expires_at > :deadline',
                 ['now' => (string) $now, 'deadline' => (string) $now, 'hash' => $hash],
             )->rowCount();
 
-            $row = $this->one('SELECT * FROM oauth_refresh_tokens WHERE token_hash = :hash', ['hash' => $hash]);
-
             if ($claimed !== 1) {
-                $this->connection->rollBack();
+                // Holding the family makes this the authoritative answer: nobody
+                // else can be spending or revoking anything in it underneath us.
+                $spent = $this->one(
+                    'SELECT used_at FROM oauth_refresh_tokens WHERE token_hash = :hash',
+                    ['hash' => $hash],
+                );
 
-                if (is_array($row) && $row['used_at'] !== null) {
+                if (is_array($spent) && $spent['used_at'] !== null) {
                     // A spent refresh token coming back means somebody has a copy.
-                    // Everything descended from that authorization stops here.
+                    // Everything descended from that authorization stops here, in
+                    // this transaction, so the revocation commits with the claim
+                    // rather than as a separate act that can fail on its own.
                     $this->revokeFamily((string) $row['family_id']);
+                    $this->connection->commit();
+                } else {
+                    $this->connection->rollBack();
                 }
 
                 throw OAuthError::refuse('invalid_grant', 'That refresh token is not usable.');
             }
 
-            /** @var array<string, mixed> $row */
             if (!hash_equals((string) $row['client_id'], $client->id)) {
                 $this->connection->commit();
 
                 throw OAuthError::refuse('invalid_grant', 'That refresh token is not usable.');
             }
-
-            $this->claimFamily((string) $row['family_id']);
 
             // The access token it came with dies with it, so a rotation cannot leave
             // two live tokens behind.
@@ -486,28 +525,41 @@ final class PdoTokens implements TokenStoreInterface
     }
 
     /**
-     * Take the family row for the rest of this transaction.
+     * Take the family that owns this code or refresh token, for the rest of the
+     * transaction. Must be the first statement in it.
      *
-     * A conditional UPDATE rather than SELECT ... FOR UPDATE, because the same
-     * statement does both jobs on every database this runs on: it fails when the
-     * family is already revoked, and it holds the row until we commit so that a
-     * revocation arriving mid-issue waits instead of missing what we write.
+     * Two rules, and both of them were learned the hard way.
+     *
+     * **The family first.** Every path through a family — redeeming, rotating,
+     * revoking — takes this row before it takes any token row. revokeFamily()
+     * does the same. Two transactions that approach the same pair from opposite
+     * ends deadlock, PostgreSQL aborts one of them, and an aborted revocation is
+     * a replay that was noticed and then not acted on: the family it should have
+     * ended stays alive, and so does the successor being issued alongside it.
+     *
+     * **As a write, with nothing read inside the transaction before it.** The
+     * family id is looked up before the transaction opens, where it needs no
+     * lock: a row's family never changes. A transaction that reads first and
+     * writes second holds a read lock it later has to upgrade, and two SQLite
+     * connections doing that at once fail outright rather than queue — the same
+     * swallowed revocation, arrived at from the other direction. Naming the id
+     * outright also keeps the statement free of a subquery, which MySQL would
+     * lock the read rows for under REPEATABLE READ, deadlocking this against the
+     * very token row the caller is about to claim.
      *
      * It counts the use rather than writing something back unchanged, because
      * MySQL reports rows it actually changed: an update that sets a column to the
      * value it already holds affects nothing, and the claim would read as a
      * refusal. Incrementing always changes something, on every driver.
+     *
+     * @return bool False when the family is already revoked.
      */
-    private function claimFamily(string $familyId): void
+    private function claimFamily(string $familyId): bool
     {
-        $claimed = $this->execute(
+        return $this->execute(
             'UPDATE oauth_families SET uses = uses + 1 WHERE family_id = :f AND revoked_at IS NULL',
             ['f' => $familyId],
-        )->rowCount();
-
-        if ($claimed !== 1) {
-            throw OAuthError::refuse('invalid_grant', 'That authorization has been withdrawn.');
-        }
+        )->rowCount() === 1;
     }
 
     // ---------------------------------------------------------------- Internals

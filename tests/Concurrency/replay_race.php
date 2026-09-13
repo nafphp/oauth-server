@@ -112,6 +112,18 @@ for ($round = 0; $round < $rounds; $round++) {
         continue;
     }
 
+    // Refused is not the same as detected. A deadlock or a lock timeout also
+    // ends the replay in an exception — and rolls the revocation back with it,
+    // leaving the family alive. Counting any failure as detection is what hid
+    // exactly that for as long as it existed, so the refusal has to be the
+    // protocol's own.
+    if (!in_array($replay['error'] ?? '', ['invalid_grant', 'invalid_request'], true)) {
+        printf("  Runde %-3d REPLAY SCHEITERTE AM TREIBER, NICHT AN DER ERKENNUNG: %s\n",
+            $round, (string) ($replay['error'] ?? '?'));
+        $leaks++;
+        continue;
+    }
+
     $detected++;
 
     // Detection happened. Now: did anything from this family survive it?
