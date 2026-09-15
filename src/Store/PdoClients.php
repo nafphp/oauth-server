@@ -26,7 +26,8 @@ final class PdoClients implements ClientStoreInterface
     public function __construct(
         private readonly PDO $connection,
         private readonly PasswordHasher $hasher,
-    ) {}
+    ) {
+    }
 
     public function find(string $clientId): ?Client
     {
@@ -59,14 +60,14 @@ final class PdoClients implements ClientStoreInterface
             // public client that may introspect would let anyone who has ever seen
             // a login link ask about anybody's tokens.
             throw new InvalidArgumentException(
-                'Introspection needs a client that can authenticate. Register it as confidential.'
+                'Introspection needs a client that can authenticate. Register it as confidential.',
             );
         }
 
         foreach ($redirectUris as $uri) {
             if (!str_starts_with($uri, 'https://') && !self::isLoopback($uri)) {
                 throw new InvalidArgumentException(
-                    'Redirect URIs must be https, or loopback for native applications: ' . $uri
+                    'Redirect URIs must be https, or loopback for native applications: ' . $uri,
                 );
             }
         }
@@ -113,7 +114,7 @@ final class PdoClients implements ClientStoreInterface
         if (!$client->isConfidential()) {
             throw new InvalidArgumentException(
                 'This client is registered as public and has no secret to rotate. What protects its '
-                . 'exchange is PKCE.'
+                . 'exchange is PKCE.',
             );
         }
 

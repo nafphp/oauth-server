@@ -25,7 +25,9 @@ use Naf\OAuth\Server\Exception\OAuthError;
 final readonly class Users
 {
     /** @param Closure(string, string): ?IdentityInterface $load */
-    public function __construct(private Closure $load) {}
+    public function __construct(private Closure $load)
+    {
+    }
 
     public function find(string $provider, string $id): ?IdentityInterface
     {

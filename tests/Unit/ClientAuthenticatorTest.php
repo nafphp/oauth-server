@@ -113,7 +113,7 @@ final class ClientAuthenticatorTest extends TestCase
 
     public function testASecretWithAColonSurvivesTheHeader(): void
     {
-        $clients = Schema::clients($this->connection);
+        $clients  = Schema::clients($this->connection);
         [$client] = $clients->register('Acme', ['https://acme.test/cb'], ['client_credentials'], [], confidential: true);
 
         // Registration generates the secret, so build the header the way a client
@@ -142,6 +142,7 @@ final class ClientAuthenticatorTest extends TestCase
         } catch (OAuthError $e) {
             self::assertSame($error, $e->error, $e->getMessage());
             self::assertSame($status, $e->status);
+
             return;
         }
 

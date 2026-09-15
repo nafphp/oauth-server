@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Naf\OAuth\Server\Core\{ClientAuthenticator, TokenEndpoint};
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Core\TokenEndpoint;
 use Naf\OAuth\Server\Exception\OAuthError;
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Model\IssuedTokens;
 use Naf\OAuth\Server\Store\PdoTokens;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -206,7 +209,7 @@ final class TokenEndpointTest extends TestCase
         // anyway — an older row, a hand-edited one — because the endpoint must not
         // rely on nothing upstream ever having slipped.
         $this->connection->exec(
-            "UPDATE oauth_clients SET secret_hash = NULL WHERE client_id = '" . $this->client->id . "'"
+            "UPDATE oauth_clients SET secret_hash = NULL WHERE client_id = '" . $this->client->id . "'",
         );
 
         // Identified by a client id anybody can read out of an authorize URL, and
@@ -264,7 +267,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /** @param list<string> $scopes */
-    private function issueFromCode(array $scopes = ['posts.read', 'posts.write']): \Naf\OAuth\Server\Model\IssuedTokens
+    private function issueFromCode(array $scopes = ['posts.read', 'posts.write']): IssuedTokens
     {
         return $this->endpoint->issue($this->credentials([
             'grant_type'    => 'authorization_code',
@@ -280,6 +283,7 @@ final class TokenEndpointTest extends TestCase
             $run();
         } catch (OAuthError $e) {
             self::assertSame($error, $e->error, $e->getMessage());
+
             return;
         }
 

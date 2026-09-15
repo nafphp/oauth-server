@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Core;
 
 use Closure;
+use Naf\Auth\Identity\IdentityInterface;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,7 +23,7 @@ final class ResourceServer
     private ?TokenContext $context = null;
 
     /**
-     * @param Closure(string, string): ?\Naf\Auth\Identity\IdentityInterface $load
+     * @param Closure(string, string): ?IdentityInterface $load
      * @param string $audience What this API is called. Empty means the issuing server's own API.
      */
     public function __construct(
@@ -31,7 +32,8 @@ final class ResourceServer
         private readonly Closure $load,
         private readonly ServerRequestInterface $request,
         private readonly string $audience = '',
-    ) {}
+    ) {
+    }
 
     public function context(): TokenContext
     {

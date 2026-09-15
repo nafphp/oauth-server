@@ -213,7 +213,7 @@ final class ClientSecretRotationTest extends TestCase
     private function moveDeadline(string $clientId, int $to): void
     {
         $statement = $this->connection->prepare(
-            'UPDATE oauth_clients SET previous_secret_expires_at = :t WHERE client_id = :id'
+            'UPDATE oauth_clients SET previous_secret_expires_at = :t WHERE client_id = :id',
         );
         $statement->execute(['t' => (string) $to, 'id' => $clientId]);
     }

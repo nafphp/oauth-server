@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Naf\OAuth\Server\Exception\OAuthError;
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Store\PdoTokens;
 use PDO;
 use PHPUnit\Framework\TestCase;
@@ -317,6 +318,7 @@ final class PdoTokensTest extends TestCase
             $run();
         } catch (OAuthError $e) {
             self::assertSame($error, $e->error, $e->getMessage());
+
             return;
         }
 
@@ -330,7 +332,11 @@ final class PdoTokensTest extends TestCase
         $issued = $this->tokens->redeem($this->code(), $this->client, self::REDIRECT, self::VERIFIER, 3600, 86400);
 
         $this->assertError('invalid_scope', fn() => $this->tokens->rotate(
-            (string) $issued->refreshToken, $this->client, 3600, 86400, ['posts.write'],
+            (string) $issued->refreshToken,
+            $this->client,
+            3600,
+            86400,
+            ['posts.write'],
         ));
 
         // An open transaction survives the request and takes its locks with it.
@@ -345,7 +351,10 @@ final class PdoTokensTest extends TestCase
         $this->tokens->revokeFamily($family);
 
         $this->assertError('invalid_grant', fn() => $this->tokens->rotate(
-            (string) $issued->refreshToken, $this->client, 3600, 86400,
+            (string) $issued->refreshToken,
+            $this->client,
+            3600,
+            86400,
         ));
 
         self::assertFalse($this->connection->inTransaction());
@@ -356,7 +365,11 @@ final class PdoTokensTest extends TestCase
         $issued = $this->tokens->redeem($this->code(), $this->client, self::REDIRECT, self::VERIFIER, 3600, 86400);
 
         $this->assertError('invalid_scope', fn() => $this->tokens->rotate(
-            (string) $issued->refreshToken, $this->client, 3600, 86400, ['posts.write'],
+            (string) $issued->refreshToken,
+            $this->client,
+            3600,
+            86400,
+            ['posts.write'],
         ));
 
         // Asking for the wrong thing is the client's mistake, not a reason to end

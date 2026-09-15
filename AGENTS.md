@@ -58,3 +58,7 @@ The PHPUnit suite does not run them and SQLite alone cannot prove the locking gu
 Use throwaway databases and clean up only those test resources.
 
 User docs: [OAuth server](https://nafphp.github.io/docs/oauth-server/).
+
+Follow the shared [PHP code style](https://github.com/nafphp/docs/blob/main/CODE_STYLE.md)
+and `.php-cs-fixer.dist.php`. Run `composer style:check`; `composer style:fix` applies the rules.
+Keep logical steps and local names readable, preserving public signatures and template output.

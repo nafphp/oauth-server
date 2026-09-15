@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Naf\OAuth\Server\Commands\DoctorCommand;
-use Naf\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 use Tests\CommandTestCase;
+
 use function Naf\app;
 
 /**
@@ -102,7 +103,7 @@ final class DoctorCommandTest extends CommandTestCase
     public function testASigningKeyTurnsOpenIdConnectOn(): void
     {
         $this->healthy();
-        app()->container()->get(\Naf\OAuth\Server\Store\KeyStoreInterface::class)->generate();
+        app()->container()->get(KeyStoreInterface::class)->generate();
 
         $result = $this->execute(new DoctorCommand());
 

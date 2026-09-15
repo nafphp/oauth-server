@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Commands;
 
 use InvalidArgumentException;
-use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\CLI\Core\AbstractCommand;
+use Naf\CLI\Core\Input;
+use Naf\CLI\Core\Output;
 use Naf\OAuth\Server\Store\ClientStoreInterface;
+
 use function Naf\app;
 
 /**
@@ -65,9 +68,9 @@ class ClientRotateSecretCommand extends AbstractCommand
         }
 
         $overlap = match (true) {
-            $immediate              => 0,
-            is_string($configured)  => (int) $configured,
-            default                 => self::DEFAULT_OVERLAP,
+            $immediate             => 0,
+            is_string($configured) => (int) $configured,
+            default                => self::DEFAULT_OVERLAP,
         };
 
         try {
@@ -86,12 +89,14 @@ class ClientRotateSecretCommand extends AbstractCommand
         $output->writeEmptyLine();
         $output->writeLine('  Copy the secret now. It is stored only as a hash and cannot be shown again.');
 
-        $output->writeLine($overlap === 0
+        $output->writeLine(
+            $overlap === 0
             ? '  The previous secret stopped working just now.'
             : '  The previous secret keeps working until '
               . date('Y-m-d H:i:s', (int) $client->previousSecretExpiresAt)
               . ' (' . $overlap . 's). Deploy the new one before then.',
-            $overlap === 0 ? 'warning' : null);
+            $overlap === 0 ? 'warning' : null,
+        );
 
         $output->writeEmptyLine();
 

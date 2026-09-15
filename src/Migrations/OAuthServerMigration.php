@@ -183,7 +183,7 @@ class OAuthServerMigration extends AbstractMigration
             foreach (self::EXACT as [$table, $column, $length]) {
                 $connection->exec(
                     'ALTER TABLE ' . $table . ' MODIFY ' . $column
-                    . ' VARCHAR(' . $length . ') COLLATE utf8mb4_bin NOT NULL'
+                    . ' VARCHAR(' . $length . ') COLLATE utf8mb4_bin NOT NULL',
                 );
             }
         }
@@ -196,7 +196,7 @@ class OAuthServerMigration extends AbstractMigration
     public function down(PDO $connection): void
     {
         foreach (['oauth_refresh_tokens', 'oauth_tokens', 'oauth_codes', 'oauth_families',
-                  'oauth_requests', 'oauth_subjects', 'oauth_clients'] as $table) {
+            'oauth_requests', 'oauth_subjects', 'oauth_clients'] as $table) {
             $connection->exec('DROP TABLE IF EXISTS ' . $table);
         }
     }

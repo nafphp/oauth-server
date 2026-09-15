@@ -14,9 +14,21 @@ final class Account implements IdentityInterface
         private readonly string $id,
         private readonly array $permissions = [],
         public bool $active = true,
-    ) {}
+    ) {
+    }
 
-    public function getIdentifier(): string { return $this->id; }
-    public function getRoles(): iterable { return []; }
-    public function getPermissions(): iterable { return $this->permissions; }
+    public function getIdentifier(): string
+    {
+        return $this->id;
+    }
+
+    public function getRoles(): iterable
+    {
+        return [];
+    }
+
+    public function getPermissions(): iterable
+    {
+        return $this->permissions;
+    }
 }

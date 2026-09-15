@@ -4,16 +4,28 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Closure;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
 use Naf\Auth\Identity\IdentityInterface;
-use Naf\OAuth\Server\Core\{Claims, ClientAuthenticator, Discovery, IdTokenIssuer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
+use Naf\OAuth\Server\Core\Claims;
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Core\Discovery;
+use Naf\OAuth\Server\Core\IdTokenIssuer;
+use Naf\OAuth\Server\Core\ScopePolicy;
+use Naf\OAuth\Server\Core\TokenEndpoint;
+use Naf\OAuth\Server\Core\UserInfoEndpoint;
+use Naf\OAuth\Server\Core\Users;
 use Naf\OAuth\Server\Exception\OAuthError;
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens};
-use Naf\OAuth\Server\Store\{FileKeys, PdoTokens};
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Model\IssuedTokens;
+use Naf\OAuth\Server\Store\FileKeys;
+use Naf\OAuth\Server\Store\PdoTokens;
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Tests\Fixtures\{Account, Schema};
+use Tests\Fixtures\Account;
+use Tests\Fixtures\Schema;
 
 /** ID tokens, UserInfo, discovery and the keys that make any of it checkable. */
 final class OpenIdTest extends TestCase
@@ -45,8 +57,8 @@ final class OpenIdTest extends TestCase
         $this->tokens     = new PdoTokens($this->connection);
 
         [$client, $secret] = Schema::register($this->connection, grants: ['authorization_code', 'refresh_token']);
-        $this->client = $client;
-        $this->secret = (string) $secret;
+        $this->client      = $client;
+        $this->secret      = (string) $secret;
     }
 
     protected function tearDown(): void
@@ -151,9 +163,9 @@ final class OpenIdTest extends TestCase
     public function testAClaimOutsideAnyStandardScopeIsNeverReleased(): void
     {
         $issued = $this->signIn(['openid', 'profile', 'email'], mapper: static fn(): array => [
-            'name'            => 'Alice',
-            'internal_notes'  => 'do not ship this',
-            'password_hash'   => 'certainly not this',
+            'name'           => 'Alice',
+            'internal_notes' => 'do not ship this',
+            'password_hash'  => 'certainly not this',
         ]);
 
         $claims = $this->decode((string) $issued->idToken);
@@ -350,7 +362,7 @@ final class OpenIdTest extends TestCase
     private function claims(?callable $mapper): Claims
     {
         return new Claims(
-            \Closure::fromCallable($mapper ?? static fn(): array => [
+            Closure::fromCallable($mapper ?? static fn(): array => [
                 'email'          => 'alice@example.test',
                 'email_verified' => true,
                 'name'           => 'Alice',
@@ -422,7 +434,10 @@ final class OpenIdTest extends TestCase
 
         // And the chain ends here rather than waiting to be tried again.
         $this->assertError('invalid_grant', 403, fn() => $this->tokens->rotate(
-            (string) $first->refreshToken, $this->client, 3600, 86400,
+            (string) $first->refreshToken,
+            $this->client,
+            3600,
+            86400,
         ), checkStatus: false);
     }
 

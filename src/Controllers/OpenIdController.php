@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Controllers;
 
-use Naf\OAuth\Server\Core\{Discovery, UserInfoEndpoint};
+use Naf\OAuth\Server\Core\Discovery;
+use Naf\OAuth\Server\Core\UserInfoEndpoint;
 use Naf\OAuth\Server\Exception\OAuthError;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function Naf\app;
 use function Naf\json;
 

@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Store;
 
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
+use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Model\IssuedTokens;
+use Naf\OAuth\Server\Model\TokenRecord;
+use SensitiveParameter;
 
 /**
  * Everything the server issues, and the operations that have to be indivisible.
@@ -25,7 +30,7 @@ interface TokenStoreInterface
     /**
      * Take it back out, for the same browser and the same person who left it.
      *
-     * @throws \Naf\OAuth\Server\Exception\OAuthError when it is gone, expired, or somebody else's.
+     * @throws OAuthError when it is gone, expired, or somebody else's.
      */
     public function consumeRequest(string $id, string $sessionId, string $userProvider, string $userId): AuthorizationRequest;
 
@@ -34,10 +39,12 @@ interface TokenStoreInterface
 
     /** Exchange a code for tokens, once, checking every binding it carries. */
     public function redeem(
-        #[\SensitiveParameter] string $code,
+        #[SensitiveParameter]
+        string $code,
         Client $client,
         ?string $redirectUri,
-        #[\SensitiveParameter] string $verifier,
+        #[SensitiveParameter]
+        string $verifier,
         int $accessTtl,
         int $refreshTtl,
     ): IssuedTokens;
@@ -48,7 +55,8 @@ interface TokenStoreInterface
      * @param list<string>|null $scopes Narrower than what was granted, or null to keep it.
      */
     public function rotate(
-        #[\SensitiveParameter] string $refreshToken,
+        #[SensitiveParameter]
+        string $refreshToken,
         Client $client,
         int $accessTtl,
         int $refreshTtl,
@@ -63,8 +71,8 @@ interface TokenStoreInterface
     public function issueForClient(Client $client, array $scopes, string $audience, int $accessTtl): IssuedTokens;
 
     /** What a bearer token is, or null when it is unknown, expired or revoked. */
-    public function inspect(#[\SensitiveParameter] string $accessToken): ?TokenRecord;
+    public function inspect(#[SensitiveParameter] string $accessToken): ?TokenRecord;
 
     /** Withdraw a token, and whatever else came from the same authorization. */
-    public function revoke(#[\SensitiveParameter] string $token, Client $client): void;
+    public function revoke(#[SensitiveParameter] string $token, Client $client): void;
 }

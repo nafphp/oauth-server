@@ -6,6 +6,7 @@ namespace Naf\OAuth\Server\Core;
 
 use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
+use SensitiveParameter;
 
 /**
  * What this server will say about the person behind an access token.
@@ -21,10 +22,11 @@ final readonly class UserInfoEndpoint
         private TokenStoreInterface $tokens,
         private Claims $claims,
         private ?Users $users = null,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
-    public function forAccessToken(#[\SensitiveParameter] ?string $accessToken): array
+    public function forAccessToken(#[SensitiveParameter] ?string $accessToken): array
     {
         $record = $accessToken === null || $accessToken === '' ? null : $this->tokens->inspect($accessToken);
 

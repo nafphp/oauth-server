@@ -144,6 +144,7 @@ final class ClientTest extends TestCase
             $run();
         } catch (OAuthError $e) {
             self::assertSame($error, $e->error, $e->getMessage());
+
             return;
         }
 

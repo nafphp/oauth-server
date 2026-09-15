@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-use Naf\OAuth\Server\Controllers\{AuthorizeController, OpenIdController, TokenController};
+use Naf\OAuth\Server\Controllers\AuthorizeController;
+use Naf\OAuth\Server\Controllers\OpenIdController;
+use Naf\OAuth\Server\Controllers\TokenController;
+
 use function Naf\config;
 use function Naf\route;
 
