@@ -62,3 +62,9 @@ User docs: [OAuth server](https://nafphp.github.io/docs/oauth-server/).
 Follow the shared [PHP code style](https://github.com/nafphp/docs/blob/main/CODE_STYLE.md)
 and `.php-cs-fixer.dist.php`. Run `composer style:check`; `composer style:fix` applies the rules.
 Keep logical steps and local names readable, preserving public signatures and template output.
+
+## Boot order
+
+The optional CLI commands are registered during this plugin's bootstrap.
+`extra.naf.boot.after` makes `naf/cli` boot first when installed; Composer
+`suggest` still controls whether the optional package is present.
