@@ -6,7 +6,8 @@ namespace Naf\OAuth\Server\Core;
 
 use Closure;
 use Naf\Auth\Auth;
-use Naf\Auth\Exceptions\{ForbiddenException, UnauthenticatedException};
+use Naf\Auth\Exceptions\ForbiddenException;
+use Naf\Auth\Exceptions\UnauthenticatedException;
 use Naf\Auth\Identity\IdentityInterface;
 use Naf\OAuth\Server\Model\TokenRecord;
 
@@ -31,16 +32,17 @@ use Naf\OAuth\Server\Model\TokenRecord;
  */
 final class TokenContext
 {
-    private ?Auth $permissions = null;
+    private ?Auth $permissions       = null;
     private ?IdentityInterface $user = null;
-    private bool $loaded = false;
+    private bool $loaded             = false;
 
     /** @param Closure(string, string): ?IdentityInterface $load */
     public function __construct(
         private readonly ?TokenRecord $record,
         private readonly ScopePolicy $policy,
         private readonly Closure $load,
-    ) {}
+    ) {
+    }
 
     public function active(): bool
     {

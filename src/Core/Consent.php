@@ -12,5 +12,6 @@ final readonly class Consent
         public string $requestId,
         public string $clientName,
         public array $scopes,
-    ) {}
+    ) {
+    }
 }

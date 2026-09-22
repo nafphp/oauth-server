@@ -23,7 +23,8 @@ final readonly class IssuedTokens
         public ?string $userProvider = null,
         public ?string $userId = null,
         public ?string $nonce = null,
-    ) {}
+    ) {
+    }
 
     public function withIdToken(string $idToken): self
     {

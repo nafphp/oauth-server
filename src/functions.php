@@ -6,6 +6,7 @@ namespace Naf\OAuth\Server;
 
 use Naf\OAuth\Server\Core\ResourceServer;
 use Naf\OAuth\Server\Core\TokenContext;
+
 use function Naf\app;
 
 /** What the bearer token on this request allows. Never the browser session. */

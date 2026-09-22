@@ -7,7 +7,8 @@ namespace Naf\OAuth\Server\Core;
 use Closure;
 use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Model\AuthorizationRequest;
-use Naf\OAuth\Server\Store\{ClientStoreInterface, TokenStoreInterface};
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Store\TokenStoreInterface;
 
 /**
  * The authorization endpoint: check the request, ask the person, issue the code.
@@ -38,7 +39,8 @@ final readonly class Authorization
         // it means a client asks for OpenID Connect, a person agrees to it, and
         // the token response quietly contains no ID token.
         private bool $signs = false,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $query

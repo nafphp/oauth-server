@@ -23,7 +23,8 @@ final readonly class Discovery
         private string $issuer,
         private ScopePolicy $policy,
         private KeyStoreInterface $keys,
-    ) {}
+    ) {
+    }
 
     /** @return array<string, mixed> */
     public function document(): array

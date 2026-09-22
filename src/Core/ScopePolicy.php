@@ -29,7 +29,9 @@ final readonly class ScopePolicy
     ];
 
     /** @param array<string, array<string, mixed>|string> $scopes */
-    public function __construct(private array $scopes) {}
+    public function __construct(private array $scopes)
+    {
+    }
 
     public function knows(string $scope): bool
     {

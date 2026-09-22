@@ -15,7 +15,8 @@ final readonly class TokenRecord
         public array $scopes,
         public string $audience,
         public int $expiresAt,
-    ) {}
+    ) {
+    }
 
     /** Client-credentials tokens stand for an application. There is no person behind them. */
     public function isApplication(): bool

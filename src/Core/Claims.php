@@ -47,7 +47,8 @@ final readonly class Claims
     public function __construct(
         private ?Closure $mapper,
         private Closure $load,
-    ) {}
+    ) {
+    }
 
     /**
      * @param list<string> $scopes

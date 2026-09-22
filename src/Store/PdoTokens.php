@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Store;
 
 use Naf\OAuth\Server\Exception\OAuthError;
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client, IssuedTokens, TokenRecord};
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Model\IssuedTokens;
+use Naf\OAuth\Server\Model\TokenRecord;
 use PDO;
 use PDOStatement;
 use RuntimeException;
+use SensitiveParameter;
 use Throwable;
 
 /**
@@ -48,7 +52,9 @@ use Throwable;
  */
 final class PdoTokens implements TokenStoreInterface
 {
-    public function __construct(private readonly PDO $connection) {}
+    public function __construct(private readonly PDO $connection)
+    {
+    }
 
     // ------------------------------------------------------------- Subjects
 
@@ -197,10 +203,12 @@ final class PdoTokens implements TokenStoreInterface
     }
 
     public function redeem(
-        #[\SensitiveParameter] string $code,
+        #[SensitiveParameter]
+        string $code,
         Client $client,
         ?string $redirectUri,
-        #[\SensitiveParameter] string $verifier,
+        #[SensitiveParameter]
+        string $verifier,
         int $accessTtl,
         int $refreshTtl,
     ): IssuedTokens {
@@ -308,7 +316,8 @@ final class PdoTokens implements TokenStoreInterface
 
     /** @param list<string>|null $scopes */
     public function rotate(
-        #[\SensitiveParameter] string $refreshToken,
+        #[SensitiveParameter]
+        string $refreshToken,
         Client $client,
         int $accessTtl,
         int $refreshTtl,
@@ -428,7 +437,7 @@ final class PdoTokens implements TokenStoreInterface
 
     // ------------------------------------------------------------ Using them
 
-    public function inspect(#[\SensitiveParameter] string $accessToken): ?TokenRecord
+    public function inspect(#[SensitiveParameter] string $accessToken): ?TokenRecord
     {
         // Joined against the registration: withdrawing a client has to take its
         // tokens with it, or revoking one means nothing until they expire.
@@ -453,7 +462,7 @@ final class PdoTokens implements TokenStoreInterface
         );
     }
 
-    public function revoke(#[\SensitiveParameter] string $token, Client $client): void
+    public function revoke(#[SensitiveParameter] string $token, Client $client): void
     {
         $hash = self::hash($token);
         $now  = (string) time();
@@ -705,12 +714,12 @@ final class PdoTokens implements TokenStoreInterface
         return rtrim(strtr(base64_encode(random_bytes($bytes)), '+/', '-_'), '=');
     }
 
-    private static function hash(#[\SensitiveParameter] string $value): string
+    private static function hash(#[SensitiveParameter] string $value): string
     {
         return hash('sha256', $value);
     }
 
-    private static function challenge(#[\SensitiveParameter] string $verifier): string
+    private static function challenge(#[SensitiveParameter] string $verifier): string
     {
         return rtrim(strtr(base64_encode(hash('sha256', $verifier, true)), '+/', '-_'), '=');
     }

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Core;
 
 use Naf\OAuth\Server\Exception\OAuthError;
-use Naf\OAuth\Server\Model\{Client, IssuedTokens};
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Model\IssuedTokens;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
 
 /**
@@ -36,7 +37,8 @@ final readonly class TokenEndpoint
         private ?IdTokenIssuer $idTokens = null,
         private ?Claims $claims = null,
         private ?Users $users = null,
-    ) {}
+    ) {
+    }
 
     /** @param array<string, mixed> $body */
     public function issue(array $body, ?string $authorization): IssuedTokens
@@ -148,14 +150,17 @@ final readonly class TokenEndpoint
             throw OAuthError::refuse('invalid_request', 'The request carries no redirect_uri.');
         }
 
-        return $this->identify($this->forLivingAccount($this->tokens->redeem(
+        $issued = $this->tokens->redeem(
             $code,
             $client,
             $redirectUri,
             $verifier,
             $this->accessTtl,
             $this->refreshTtl,
-        ), $client), $client);
+        );
+        $issued = $this->forLivingAccount($issued, $client);
+
+        return $this->identify($issued, $client);
     }
 
     /** @param array<string, mixed> $body */
@@ -171,13 +176,16 @@ final readonly class TokenEndpoint
 
         // A refreshed ID token carries no nonce: that one belonged to the login
         // this chain started from. OpenID Connect Core §12.2.
-        return $this->identify($this->forLivingAccount($this->tokens->rotate(
+        $issued = $this->tokens->rotate(
             $token,
             $client,
             $this->accessTtl,
             $this->refreshTtl,
             $scopes === [] ? null : $scopes,
-        ), $client), $client);
+        );
+        $issued = $this->forLivingAccount($issued, $client);
+
+        return $this->identify($issued, $client);
     }
 
     /** @param array<string, mixed> $body */

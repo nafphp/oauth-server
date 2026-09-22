@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Store;
 
+use InvalidArgumentException;
 use Naf\OAuth\Server\Model\Client;
 
 /**
@@ -50,7 +51,7 @@ interface ClientStoreInterface
      * configuration that names it.
      *
      * @return array{0: Client, 1: string} The client, and its new secret — shown once, stored hashed.
-     * @throws \InvalidArgumentException when there is no such client, or it keeps no secret.
+     * @throws InvalidArgumentException when there is no such client, or it keeps no secret.
      */
     public function rotateSecret(string $clientId, int $overlap): array;
 

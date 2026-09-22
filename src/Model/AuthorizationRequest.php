@@ -29,7 +29,8 @@ final readonly class AuthorizationRequest
         public string $sessionId,
         public string $userProvider,
         public string $userId,
-    ) {}
+    ) {
+    }
 
     public function scope(): string
     {

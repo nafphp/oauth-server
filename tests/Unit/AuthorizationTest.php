@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Naf\OAuth\Server\Core\{Authorization, ScopePolicy};
+use Naf\OAuth\Server\Core\Authorization;
+use Naf\OAuth\Server\Core\Consent;
+use Naf\OAuth\Server\Core\ScopePolicy;
 use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Store\PdoTokens;
@@ -222,7 +224,7 @@ final class AuthorizationTest extends TestCase
     }
 
     /** @param array<string, string|null> $overrides */
-    private function begin(array $overrides = [], ?Client $client = null): \Naf\OAuth\Server\Core\Consent
+    private function begin(array $overrides = [], ?Client $client = null): Consent
     {
         $query = $overrides + [
             'client_id'             => ($client ?? $this->client)->id,

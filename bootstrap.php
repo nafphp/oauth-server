@@ -4,16 +4,34 @@ declare(strict_types=1);
 
 use Naf\Auth\Support\PasswordHasher;
 use Naf\CLI\Support\CommandRegistry;
-use Naf\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand,
-    DoctorCommand, KeysGenerateCommand, KeysPruneCommand, SetupCommand};
 use Naf\Database\Core\Database;
 use Naf\Database\Support\MigrationRegistry;
-use Naf\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
-    ResourceServer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
+use Naf\OAuth\Server\Commands\ClientCreateCommand;
+use Naf\OAuth\Server\Commands\ClientListCommand;
+use Naf\OAuth\Server\Commands\ClientRotateSecretCommand;
+use Naf\OAuth\Server\Commands\DoctorCommand;
+use Naf\OAuth\Server\Commands\KeysGenerateCommand;
+use Naf\OAuth\Server\Commands\KeysPruneCommand;
+use Naf\OAuth\Server\Commands\SetupCommand;
+use Naf\OAuth\Server\Core\Authorization;
+use Naf\OAuth\Server\Core\Claims;
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Core\Discovery;
+use Naf\OAuth\Server\Core\IdTokenIssuer;
+use Naf\OAuth\Server\Core\ResourceServer;
+use Naf\OAuth\Server\Core\ScopePolicy;
+use Naf\OAuth\Server\Core\TokenEndpoint;
+use Naf\OAuth\Server\Core\UserInfoEndpoint;
+use Naf\OAuth\Server\Core\Users;
 use Naf\OAuth\Server\Exception\ConfigurationException;
-use Naf\OAuth\Server\Store\{ClientStoreInterface, FileKeys, KeyStoreInterface,
-    PdoClients, PdoTokens, TokenStoreInterface};
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Store\FileKeys;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
+use Naf\OAuth\Server\Store\PdoClients;
+use Naf\OAuth\Server\Store\PdoTokens;
+use Naf\OAuth\Server\Store\TokenStoreInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function Naf\app;
 use function Naf\Auth\auth;
 use function Naf\config;
@@ -32,7 +50,7 @@ if (!$container->has(PDO::class) && app()->hasPlugin('naf/database')) {
         if (!$connection instanceof PDO) {
             throw new ConfigurationException(
                 'naf/database is installed but has no connection configured, so there is no '
-                . PDO::class . ' to work with. Configure "database", or bind your own connection.'
+                . PDO::class . ' to work with. Configure "database", or bind your own connection.',
             );
         }
 
@@ -95,7 +113,7 @@ $issuer = static function (): string {
     if (!is_string($url) || trim($url) === '') {
         throw new ConfigurationException(
             'public_url is required to issue ID tokens: it is the issuer relying parties check, '
-            . 'and a request cannot be trusted to say where this server lives.'
+            . 'and a request cannot be trusted to say where this server lives.',
         );
     }
 

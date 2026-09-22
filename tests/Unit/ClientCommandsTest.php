@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Naf\OAuth\Server\Commands\{ClientCreateCommand, ClientListCommand, ClientRotateSecretCommand};
+use Naf\OAuth\Server\Commands\ClientCreateCommand;
+use Naf\OAuth\Server\Commands\ClientListCommand;
+use Naf\OAuth\Server\Commands\ClientRotateSecretCommand;
 use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Store\ClientStoreInterface;
 use Tests\CommandTestCase;
+
 use function Naf\app;
 
 /**
@@ -166,11 +170,15 @@ final class ClientCommandsTest extends CommandTestCase
 
         self::assertNotSame($old, $new);
         self::assertSame($client->id, $authenticator->authenticate(
-            ['client_id' => $client->id, 'client_secret' => $new], null)->id);
+            ['client_id' => $client->id, 'client_secret' => $new],
+            null,
+        )->id);
 
         // And the old one still works, which is the entire reason for the window.
         self::assertSame($client->id, $authenticator->authenticate(
-            ['client_id' => $client->id, 'client_secret' => (string) $old], null)->id);
+            ['client_id' => $client->id, 'client_secret' => (string) $old],
+            null,
+        )->id);
     }
 
     public function testRotatingNamesTheDeadlineSomebodyHasToDeployBefore(): void
@@ -194,7 +202,7 @@ final class ClientCommandsTest extends CommandTestCase
         $this->assertSucceeded($result);
         self::assertStringContainsString('stopped working just now', $result->output);
 
-        $this->expectException(\Naf\OAuth\Server\Exception\OAuthError::class);
+        $this->expectException(OAuthError::class);
         app()->container()->get(ClientAuthenticator::class)
             ->authenticate(['client_id' => $client->id, 'client_secret' => (string) $old], null);
     }

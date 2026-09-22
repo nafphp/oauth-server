@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Naf\OAuth\Server\Core\{ResourceServer, ScopePolicy};
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
+use Naf\OAuth\Server\Core\ResourceServer;
+use Naf\OAuth\Server\Core\ScopePolicy;
+use Naf\OAuth\Server\Core\TokenContext;
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Store\PdoTokens;
 use Nyholm\Psr7\ServerRequest;
 use PDO;
@@ -94,7 +97,7 @@ final class ResourceServerTest extends TestCase
         self::assertNull($this->tokens->inspect($first->accessToken), 'the replaced token is gone');
     }
 
-    private function context(string $token, string $audience = ''): \Naf\OAuth\Server\Core\TokenContext
+    private function context(string $token, string $audience = ''): TokenContext
     {
         return (new ResourceServer(
             $this->tokens,

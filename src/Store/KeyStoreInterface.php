@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Store;
 
 use Naf\OAuth\Server\Model\SigningKey;
+use RuntimeException;
 
 /**
  * The keys this server signs with, and the ones it still publishes.
@@ -16,7 +17,7 @@ use Naf\OAuth\Server\Model\SigningKey;
  */
 interface KeyStoreInterface
 {
-    /** @throws \RuntimeException when none has been generated yet. */
+    /** @throws RuntimeException when none has been generated yet. */
     public function active(): SigningKey;
 
     public function has(): bool;

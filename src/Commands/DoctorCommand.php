@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Commands;
 
+use Naf\CLI\Core\AbstractCommand;
+use Naf\CLI\Core\Input;
+use Naf\CLI\Core\Output;
 use Naf\Core\Route;
-use Naf\CLI\Core\{AbstractCommand, Input, Output};
 use Naf\OAuth\Server\Core\ScopePolicy;
-use Naf\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface};
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
 use PDO;
 use Throwable;
+
 use function Naf\app;
 use function Naf\config;
 
@@ -44,10 +48,12 @@ class DoctorCommand extends AbstractCommand
         $this->login($output);
 
         $output->writeEmptyLine();
-        $output->writeLine($this->problems === 0
+        $output->writeLine(
+            $this->problems === 0
             ? '  Ready to answer.'
             : '  ' . $this->problems . ' thing(s) to fix.',
-            $this->problems === 0 ? 'ok' : 'error');
+            $this->problems === 0 ? 'ok' : 'error',
+        );
         $output->writeEmptyLine();
 
         return $this->problems === 0 ? self::SUCCESS : self::ERROR;
@@ -58,13 +64,19 @@ class DoctorCommand extends AbstractCommand
         $url  = config('public_url');
         $name = config('oauth_server:name');
 
-        $this->line($output, 'issuer (public_url)',
+        $this->line(
+            $output,
+            'issuer (public_url)',
             is_string($url) && trim($url) !== '' ? $url : 'MISSING — relying parties check this value',
-            is_string($url) && trim($url) !== '');
+            is_string($url) && trim($url) !== '',
+        );
 
-        $this->line($output, 'service name',
+        $this->line(
+            $output,
+            'service name',
             is_string($name) && trim($name) !== '' ? $name : 'MISSING — the consent screen has nothing to call you',
-            is_string($name) && trim($name) !== '');
+            is_string($name) && trim($name) !== '',
+        );
     }
 
     private function schema(Output $output): void
@@ -80,7 +92,7 @@ class DoctorCommand extends AbstractCommand
         $this->line($output, 'connection', $connection->getAttribute(PDO::ATTR_DRIVER_NAME), true);
 
         foreach (['oauth_clients', 'oauth_families', 'oauth_codes', 'oauth_tokens',
-                  'oauth_refresh_tokens', 'oauth_requests', 'oauth_subjects'] as $table) {
+            'oauth_refresh_tokens', 'oauth_requests', 'oauth_subjects'] as $table) {
             try {
                 $connection->query('SELECT 1 FROM ' . $table . ' WHERE 1 = 0');
                 $present = true;
@@ -166,10 +178,14 @@ class DoctorCommand extends AbstractCommand
 
         $routes = app()->container()->get(Route::class)->all();
 
-        $this->line($output, 'login route', isset($routes['login'])
+        $this->line(
+            $output,
+            'login route',
+            isset($routes['login'])
             ? (string) $routes['login']['path'] . ' (derived from the route named "login")'
             : 'MISSING — no route named "login", so set oauth_server:login_route',
-            isset($routes['login']));
+            isset($routes['login']),
+        );
     }
 
     private function line(Output $output, string $label, string $value, bool $good): void

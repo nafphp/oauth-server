@@ -19,7 +19,8 @@ final readonly class SigningKey
     public function __construct(
         public string $id,
         private string $privateKey,
-    ) {}
+    ) {
+    }
 
     public function pem(): string
     {

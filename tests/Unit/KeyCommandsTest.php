@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Naf\CLI\Support\CommandRegistry;
-use Naf\OAuth\Server\Commands\{KeysGenerateCommand, KeysPruneCommand, SetupCommand};
+use Naf\OAuth\Server\Commands\KeysGenerateCommand;
+use Naf\OAuth\Server\Commands\KeysPruneCommand;
+use Naf\OAuth\Server\Commands\SetupCommand;
 use Naf\OAuth\Server\Store\KeyStoreInterface;
 use Tests\CommandTestCase;
+
 use function Naf\app;
 
 /**

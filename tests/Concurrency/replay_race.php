@@ -18,8 +18,10 @@ require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 use Naf\Auth\Support\PasswordHasher;
 use Naf\OAuth\Server\Migrations\OAuthServerMigration;
-use Naf\OAuth\Server\Model\{AuthorizationRequest, Client};
-use Naf\OAuth\Server\Store\{PdoClients, PdoTokens};
+use Naf\OAuth\Server\Model\AuthorizationRequest;
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Store\PdoClients;
+use Naf\OAuth\Server\Store\PdoTokens;
 
 const VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
 const REDIRECT = 'https://intranet.example.test/callback';
@@ -39,16 +41,26 @@ function connect(string $target): PDO
         default => new PDO('sqlite:' . sys_get_temp_dir() . '/naf-race.sqlite'),
     };
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    if ($target === 'sqlite') { $pdo->exec('PRAGMA busy_timeout = 5000'); }
+    if ($target === 'sqlite') {
+        $pdo->exec('PRAGMA busy_timeout = 5000');
+    }
+
     return $pdo;
 }
 
 function request(Client $client, string $user): AuthorizationRequest
 {
     return new AuthorizationRequest(
-        clientId: $client->id, redirectUri: REDIRECT, scopes: ['posts.read'], state: 's',
+        clientId: $client->id,
+        redirectUri: REDIRECT,
+        scopes: ['posts.read'],
+        state: 's',
         codeChallenge: rtrim(strtr(base64_encode(hash('sha256', VERIFIER, true)), '+/', '-_'), '='),
-        nonce: null, audience: '', sessionId: 'session-1', userProvider: 'database', userId: $user,
+        nonce: null,
+        audience: '',
+        sessionId: 'session-1',
+        userProvider: 'database',
+        userId: $user,
     );
 }
 
@@ -57,10 +69,14 @@ $pdo = connect($target);
 (new OAuthServerMigration())->up($pdo);
 
 [$client] = (new PdoClients($pdo, new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4])))->register(
-    'Acme', [REDIRECT], ['authorization_code', 'refresh_token'], ['posts.read'], confidential: true,
+    'Acme',
+    [REDIRECT],
+    ['authorization_code', 'refresh_token'],
+    ['posts.read'],
+    confidential: true,
 );
 
-$leaks = 0;
+$leaks    = 0;
 $detected = 0;
 
 for ($round = 0; $round < $rounds; $round++) {
@@ -81,9 +97,12 @@ for ($round = 0; $round < $rounds; $round++) {
 
         if ($pid === 0) {
             $t = new PdoTokens(connect($target));
-            while (microtime(true) < $startAt) { usleep(100); }
+            while (microtime(true) < $startAt) {
+                usleep(100);
+            }
 
             $outcome = ['role' => $role];
+
             try {
                 $issued = $t->rotate($token, $client, 3600, 86400);
                 $outcome += ['ok' => true, 'access' => $issued->accessToken, 'refresh' => $issued->refreshToken];
@@ -98,7 +117,9 @@ for ($round = 0; $round < $rounds; $round++) {
         $pids[] = $pid;
     }
 
-    foreach ($pids as $pid) { pcntl_waitpid($pid, $status); }
+    foreach ($pids as $pid) {
+        pcntl_waitpid($pid, $status);
+    }
 
     $replay = json_decode((string) @file_get_contents($dir . '/replay.json'), true);
     $rotate = json_decode((string) @file_get_contents($dir . '/rotate.json'), true);
@@ -118,8 +139,11 @@ for ($round = 0; $round < $rounds; $round++) {
     // exactly that for as long as it existed, so the refusal has to be the
     // protocol's own.
     if (!in_array($replay['error'] ?? '', ['invalid_grant', 'invalid_request'], true)) {
-        printf("  Runde %-3d REPLAY SCHEITERTE AM TREIBER, NICHT AN DER ERKENNUNG: %s\n",
-            $round, (string) ($replay['error'] ?? '?'));
+        printf(
+            "  Runde %-3d REPLAY SCHEITERTE AM TREIBER, NICHT AN DER ERKENNUNG: %s\n",
+            $round,
+            (string) ($replay['error'] ?? '?'),
+        );
         $leaks++;
         continue;
     }
@@ -131,7 +155,9 @@ for ($round = 0; $round < $rounds; $round++) {
     $alive = [];
 
     if (($rotate['ok'] ?? false) === true) {
-        if ($check->inspect($rotate['access']) !== null) { $alive[] = 'access'; }
+        if ($check->inspect($rotate['access']) !== null) {
+            $alive[] = 'access';
+        }
 
         try {
             $check->rotate((string) $rotate['refresh'], $client, 3600, 86400);
@@ -152,8 +178,13 @@ for ($round = 0; $round < $rounds; $round++) {
 array_map('unlink', glob($dir . '/*') ?: []);
 @rmdir($dir);
 
-printf("\n%-7s  %d Runden, %d Replays erkannt, %d mit ueberlebendem Token  -> %s\n",
-    strtoupper($target), $rounds, $detected, $leaks,
-    $leaks === 0 ? 'sauber' : 'RENNEN NACHGEWIESEN');
+printf(
+    "\n%-7s  %d Runden, %d Replays erkannt, %d mit ueberlebendem Token  -> %s\n",
+    strtoupper($target),
+    $rounds,
+    $detected,
+    $leaks,
+    $leaks === 0 ? 'sauber' : 'RENNEN NACHGEWIESEN',
+);
 
 exit($leaks === 0 ? 0 : 1);

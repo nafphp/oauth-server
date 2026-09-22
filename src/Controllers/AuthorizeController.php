@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Controllers;
 
+use LogicException;
 use Naf\Core\Route;
-use Naf\OAuth\Server\Support\Views;
 use Naf\OAuth\Server\Core\Authorization;
 use Naf\OAuth\Server\Exception\OAuthError;
+use Naf\OAuth\Server\Support\Views;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function Naf\app;
 use function Naf\Auth\auth;
 use function Naf\config;
@@ -54,7 +56,7 @@ final class AuthorizeController
             // token, so that opening a second consent form does not invalidate
             // the first. Nothing is stored for it: the value is derived, and the
             // session id it is derived from never leaves the server.
-            'csrf'    => self::formToken($consent->requestId),
+            'csrf' => self::formToken($consent->requestId),
         ]));
     }
 
@@ -158,8 +160,8 @@ final class AuthorizeController
             return (string) $routes['login']['path'];
         }
 
-        throw new \LogicException(
-            'oauth_server:login_route is required: this application has no route named "login" to send people to.'
+        throw new LogicException(
+            'oauth_server:login_route is required: this application has no route named "login" to send people to.',
         );
     }
 }

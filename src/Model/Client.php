@@ -34,7 +34,8 @@ final readonly class Client
         public array $audiences = [],
         public ?string $previousSecretHash = null,
         public ?int $previousSecretExpiresAt = null,
-    ) {}
+    ) {
+    }
 
     /** A client that can keep a secret authenticates with it; a public one uses PKCE alone. */
     public function isConfidential(): bool

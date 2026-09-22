@@ -33,7 +33,8 @@ final readonly class ClientAuthenticator
     public function __construct(
         private ClientStoreInterface $clients,
         private PasswordHasher $hasher,
-    ) {}
+    ) {
+    }
 
     /** @param array<string, mixed> $body */
     public function authenticate(array $body, ?string $authorizationHeader): Client

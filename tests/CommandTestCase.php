@@ -6,14 +6,28 @@ namespace Tests;
 
 use Naf\Auth\Auth;
 use Naf\Auth\Support\PasswordHasher;
-use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\CLI\Core\AbstractCommand;
+use Naf\CLI\Core\Input;
+use Naf\CLI\Core\Output;
 use Naf\Core\Config;
-use Naf\OAuth\Server\Core\{Authorization, Claims, ClientAuthenticator, Discovery, IdTokenIssuer,
-    ResourceServer, ScopePolicy, TokenEndpoint, UserInfoEndpoint, Users};
+use Naf\OAuth\Server\Core\Authorization;
+use Naf\OAuth\Server\Core\Claims;
+use Naf\OAuth\Server\Core\ClientAuthenticator;
+use Naf\OAuth\Server\Core\Discovery;
+use Naf\OAuth\Server\Core\IdTokenIssuer;
+use Naf\OAuth\Server\Core\ResourceServer;
+use Naf\OAuth\Server\Core\ScopePolicy;
+use Naf\OAuth\Server\Core\TokenEndpoint;
+use Naf\OAuth\Server\Core\UserInfoEndpoint;
+use Naf\OAuth\Server\Core\Users;
 use Naf\OAuth\Server\Migrations\OAuthServerMigration;
-use Naf\OAuth\Server\Store\{ClientStoreInterface, KeyStoreInterface, TokenStoreInterface};
+use Naf\OAuth\Server\Model\Client;
+use Naf\OAuth\Server\Store\ClientStoreInterface;
+use Naf\OAuth\Server\Store\KeyStoreInterface;
+use Naf\OAuth\Server\Store\TokenStoreInterface;
 use PDO;
 use PHPUnit\Framework\TestCase;
+
 use function Naf\app;
 
 /**
@@ -140,7 +154,7 @@ abstract class CommandTestCase extends TestCase
 
     /**
      * @param list<string> $grants
-     * @return array{0: \Naf\OAuth\Server\Model\Client, 1: string|null}
+     * @return array{0: Client, 1: string|null}
      */
     protected function register(
         string $name = 'Acme Intranet',

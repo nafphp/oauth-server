@@ -8,6 +8,7 @@ use Naf\OAuth\Server\Core\TokenEndpoint;
 use Naf\OAuth\Server\Exception\OAuthError;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function Naf\app;
 use function Naf\json;
 use function Naf\response;

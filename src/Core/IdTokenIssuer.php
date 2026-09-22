@@ -26,7 +26,8 @@ final readonly class IdTokenIssuer
         private KeyStoreInterface $keys,
         private string $issuer,
         private int $ttl = 3600,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $claims Profile and e-mail claims, already filtered by scope.

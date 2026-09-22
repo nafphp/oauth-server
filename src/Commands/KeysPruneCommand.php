@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Commands;
 
-use Naf\CLI\Core\{AbstractCommand, Input, Output};
+use Naf\CLI\Core\AbstractCommand;
+use Naf\CLI\Core\Input;
+use Naf\CLI\Core\Output;
 use Naf\OAuth\Server\Store\KeyStoreInterface;
+
 use function Naf\app;
 use function Naf\config;
 

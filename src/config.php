@@ -15,9 +15,9 @@ return [
      * made by a person, and it keeps its CSRF token like every other form.
      */
     'csrf_exempt_routes' => [
-        'oauth.token'      => true,
-        'oauth.revoke'     => true,
-        'oauth.introspect' => true,
+        'oauth.token'         => true,
+        'oauth.revoke'        => true,
+        'oauth.introspect'    => true,
         'oauth.userinfo.post' => true,
 
         // The consent form carries its own token, bound to the one request it
