@@ -17,6 +17,7 @@ if (config('oauth_server:routes', true) !== false) {
     route()->add('POST', '/oauth/token', [TokenController::class, 'issue'], 'oauth.token');
     route()->add('POST', '/oauth/revoke', [TokenController::class, 'revoke'], 'oauth.revoke');
     route()->add('POST', '/oauth/introspect', [TokenController::class, 'introspect'], 'oauth.introspect');
+    route()->add('GET', '/.well-known/oauth-authorization-server', [OpenIdController::class, 'configuration'], 'oauth.authorization_server');
 
     // OpenID Connect. The discovery document only advertises these once a signing
     // key exists, so an installation that never generated one simply never points

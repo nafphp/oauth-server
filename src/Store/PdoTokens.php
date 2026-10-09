@@ -50,7 +50,7 @@ use Throwable;
  * duration — a quiet weakening of the one thing rotation exists to do. Clients
  * that might refresh twice at once should serialise their own refreshes.
  */
-final class PdoTokens implements TokenStoreInterface
+final class PdoTokens implements ResourceTokenStoreInterface
 {
     public function __construct(private readonly PDO $connection)
     {
@@ -212,6 +212,34 @@ final class PdoTokens implements TokenStoreInterface
         int $accessTtl,
         int $refreshTtl,
     ): IssuedTokens {
+        return $this->redeemCode($code, $client, $redirectUri, $verifier, $accessTtl, $refreshTtl, null);
+    }
+
+    public function redeemForResource(
+        #[SensitiveParameter]
+        string $code,
+        Client $client,
+        ?string $redirectUri,
+        #[SensitiveParameter]
+        string $verifier,
+        int $accessTtl,
+        int $refreshTtl,
+        string $resource,
+    ): IssuedTokens {
+        return $this->redeemCode($code, $client, $redirectUri, $verifier, $accessTtl, $refreshTtl, $resource);
+    }
+
+    private function redeemCode(
+        #[SensitiveParameter]
+        string $code,
+        Client $client,
+        ?string $redirectUri,
+        #[SensitiveParameter]
+        string $verifier,
+        int $accessTtl,
+        int $refreshTtl,
+        ?string $resource,
+    ): IssuedTokens {
         $hash = self::hash($code);
         $now  = time();
 
@@ -261,7 +289,8 @@ final class PdoTokens implements TokenStoreInterface
 
             $mismatch = !hash_equals((string) $row['client_id'], $client->id)
                 || !hash_equals((string) $row['code_challenge'], self::challenge($verifier))
-                || ($redirectUri !== null && !hash_equals((string) $row['redirect_uri'], $redirectUri));
+                || ($redirectUri !== null && !hash_equals((string) $row['redirect_uri'], $redirectUri))
+                || ($resource !== null && !hash_equals((string) $row['audience'], $resource));
 
             if ($mismatch) {
                 // The claim stands: a code offered with the wrong credentials has

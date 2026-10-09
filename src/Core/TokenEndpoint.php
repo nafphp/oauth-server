@@ -7,6 +7,7 @@ namespace Naf\OAuth\Server\Core;
 use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Model\IssuedTokens;
+use Naf\OAuth\Server\Store\ResourceTokenStoreInterface;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
 
 /**
@@ -150,14 +151,28 @@ final readonly class TokenEndpoint
             throw OAuthError::refuse('invalid_request', 'The request carries no redirect_uri.');
         }
 
-        $issued = $this->tokens->redeem(
+        $resource = self::text($body, 'resource');
+
+        if (array_key_exists('resource', $body) && $resource === null) {
+            throw OAuthError::refuse('invalid_request', 'The resource must be a non-empty URI.');
+        }
+
+        if ($resource !== null && !$this->tokens instanceof ResourceTokenStoreInterface) {
+            throw OAuthError::refuse('invalid_target', 'This token store cannot validate a requested resource.');
+        }
+
+        $arguments = [
             $code,
             $client,
             $redirectUri,
             $verifier,
             $this->accessTtl,
             $this->refreshTtl,
-        );
+        ];
+
+        $issued = $resource === null
+            ? $this->tokens->redeem(...$arguments)
+            : $this->tokens->redeemForResource(...[...$arguments, $resource]);
         $issued = $this->forLivingAccount($issued, $client);
 
         return $this->identify($issued, $client);

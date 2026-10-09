@@ -87,6 +87,55 @@ final class TokenEndpointTest extends TestCase
         ]), null));
     }
 
+    public function testTheResourceMustMatchTheCodeAndSurvivesRefreshWithoutAResourceParameter(): void
+    {
+        $resource = 'https://tools.example.test/mcp';
+        $issued   = $this->endpoint->issue($this->credentials([
+            'grant_type'    => 'authorization_code',
+            'code'          => $this->code(audience: $resource),
+            'code_verifier' => self::VERIFIER,
+            'redirect_uri'  => self::REDIRECT,
+            'resource'      => $resource,
+        ]), null);
+        self::assertSame($resource, $this->tokens->inspect($issued->accessToken)?->audience);
+
+        $refreshed = $this->endpoint->issue($this->credentials([
+            'grant_type'    => 'refresh_token',
+            'refresh_token' => $issued->refreshToken,
+        ]), null);
+        self::assertSame($resource, $this->tokens->inspect($refreshed->accessToken)?->audience);
+    }
+
+    public function testAResourceMismatchConsumesTheCodeWithoutIssuingTokens(): void
+    {
+        $code    = $this->code(audience: 'https://tools.example.test/mcp');
+        $request = $this->credentials([
+            'grant_type'    => 'authorization_code',
+            'code'          => $code,
+            'code_verifier' => self::VERIFIER,
+            'redirect_uri'  => self::REDIRECT,
+            'resource'      => 'https://another.example.test/mcp',
+        ]);
+        $this->assertError('invalid_grant', fn() => $this->endpoint->issue($request, null));
+        $request['resource'] = 'https://tools.example.test/mcp';
+        $this->assertError('invalid_grant', fn() => $this->endpoint->issue($request, null));
+        self::assertSame(0, (int) $this->connection->query('SELECT COUNT(*) FROM oauth_tokens')->fetchColumn());
+    }
+
+    public function testMalformedResourceDoesNotSpendTheCode(): void
+    {
+        $request = $this->credentials([
+            'grant_type'    => 'authorization_code',
+            'code'          => $this->code(),
+            'code_verifier' => self::VERIFIER,
+            'redirect_uri'  => self::REDIRECT,
+            'resource'      => ['https://tools.example.test/mcp'],
+        ]);
+        $this->assertError('invalid_request', fn() => $this->endpoint->issue($request, null));
+        unset($request['resource']);
+        self::assertNotEmpty($this->endpoint->issue($request, null)->accessToken);
+    }
+
     // --------------------------------------------------------------- Refresh
 
     public function testARefreshTokenBecomesANewPair(): void
@@ -250,7 +299,7 @@ final class TokenEndpointTest extends TestCase
     }
 
     /** @param list<string> $scopes */
-    private function code(array $scopes = ['posts.read', 'posts.write']): string
+    private function code(array $scopes = ['posts.read', 'posts.write'], string $audience = ''): string
     {
         return $this->tokens->issueCode(new AuthorizationRequest(
             clientId: $this->client->id,
@@ -259,7 +308,7 @@ final class TokenEndpointTest extends TestCase
             state: 'state-1',
             codeChallenge: rtrim(strtr(base64_encode(hash('sha256', self::VERIFIER, true)), '+/', '-_'), '='),
             nonce: null,
-            audience: '',
+            audience: $audience,
             sessionId: 'session-1',
             userProvider: 'database',
             userId: '42',
