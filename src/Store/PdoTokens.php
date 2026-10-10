@@ -9,6 +9,7 @@ use Naf\OAuth\Server\Model\AuthorizationRequest;
 use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Model\IssuedTokens;
 use Naf\OAuth\Server\Model\TokenRecord;
+use Naf\OAuth\Server\Support\Pkce;
 use PDO;
 use PDOStatement;
 use RuntimeException;
@@ -287,7 +288,8 @@ final class PdoTokens implements ResourceTokenStoreInterface
                 throw OAuthError::refuse('invalid_grant', 'That authorization code is not usable.');
             }
 
-            $mismatch = !hash_equals((string) $row['client_id'], $client->id)
+            $mismatch = !Pkce::validVerifier($verifier)
+                || !hash_equals((string) $row['client_id'], $client->id)
                 || !hash_equals((string) $row['code_challenge'], self::challenge($verifier))
                 || ($redirectUri !== null && !hash_equals((string) $row['redirect_uri'], $redirectUri))
                 || ($resource !== null && !hash_equals((string) $row['audience'], $resource));

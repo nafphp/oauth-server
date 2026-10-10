@@ -9,6 +9,7 @@ use Naf\OAuth\Server\Exception\OAuthError;
 use Naf\OAuth\Server\Model\AuthorizationRequest;
 use Naf\OAuth\Server\Store\ClientStoreInterface;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
+use Naf\OAuth\Server\Support\Pkce;
 
 /**
  * The authorization endpoint: check the request, ask the person, issue the code.
@@ -85,8 +86,8 @@ final readonly class Authorization
 
             $challenge = self::text($query, 'code_challenge');
 
-            if ($challenge === null) {
-                throw OAuthError::redirect('invalid_request', 'PKCE is required: send a code_challenge.');
+            if ($challenge === null || !Pkce::validChallenge($challenge)) {
+                throw OAuthError::redirect('invalid_request', 'PKCE requires a 43-character base64url S256 code_challenge.');
             }
 
             if (self::text($query, 'code_challenge_method') !== 'S256') {

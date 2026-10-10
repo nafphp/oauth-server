@@ -23,7 +23,7 @@ use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Store\PdoClients;
 use Naf\OAuth\Server\Store\PdoTokens;
 
-const VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
+const VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-xxxx';
 const REDIRECT = 'https://intranet.example.test/callback';
 
 $target = $argv[1] ?? 'sqlite';

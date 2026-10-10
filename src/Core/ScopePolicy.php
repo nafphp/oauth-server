@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Naf\OAuth\Server\Core;
 
+use Naf\OAuth\Server\Exception\ConfigurationException;
+
 /**
  * What the scopes this server offers mean, and what they require.
  *
@@ -31,6 +33,16 @@ final readonly class ScopePolicy
     /** @param array<string, array<string, mixed>|string> $scopes */
     public function __construct(private array $scopes)
     {
+        foreach ($scopes as $scope => $entry) {
+            if (!is_array($entry) || !array_key_exists('permission', $entry)) {
+                continue;
+            }
+
+            $permission = $entry['permission'];
+            if ($permission !== null && (!is_string($permission) || trim($permission) === '')) {
+                throw new ConfigurationException('OAuth scope "' . $scope . '": permission must be null or a non-empty permission name.');
+            }
+        }
     }
 
     public function knows(string $scope): bool
@@ -71,7 +83,7 @@ final readonly class ScopePolicy
         if (is_array($entry) && array_key_exists('permission', $entry)) {
             $permission = $entry['permission'];
 
-            return is_string($permission) && $permission !== '' ? $permission : null;
+            return $permission;
         }
 
         return $scope;

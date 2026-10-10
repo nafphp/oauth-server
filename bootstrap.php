@@ -173,6 +173,9 @@ if (!$container->has(UserInfoEndpoint::class)) {
 
 if (!$container->has(TokenEndpoint::class)) {
     $container->set(TokenEndpoint::class, static function () use ($container): TokenEndpoint {
+        // Reject invalid scope permissions before any grant can issue credentials.
+        $container->get(ScopePolicy::class);
+
         // Without a signing key this is an OAuth2 server, which is a complete
         // thing to be. Handing the endpoint a null issuer is what makes it one,
         // rather than a broken OIDC provider that fails at the first id_token.
