@@ -35,10 +35,13 @@ final class PdoTokensTest extends TestCase
     {
         $subject = $this->tokens->subjectFor('database', '42');
 
-        self::assertSame($subject, $this->tokens->subjectFor('database', '42'));
+        self::assertSame($subject, (new PdoTokens($this->connection))->subjectFor('database', '42'));
         self::assertNotSame($subject, $this->tokens->subjectFor('database', '43'));
-        self::assertStringNotContainsString('database', $subject);
-        self::assertStringNotContainsString('42', $subject);
+        self::assertMatchesRegularExpression('/\A[A-Za-z0-9_-]{22}\z/', $subject);
+        // Random IDs can contain account substrings by chance; another installation
+        // must assign its own subject rather than derive it from the account ID.
+        $otherStore = new PdoTokens(Schema::migrate(Schema::connect()));
+        self::assertNotSame($subject, $otherStore->subjectFor('database', '42'));
     }
 
     public function testTheSameIdInAnotherAccountSourceIsAnotherPerson(): void
