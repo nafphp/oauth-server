@@ -34,7 +34,7 @@ final class AuthorizeController
         $request = self::request();
 
         if (!auth()->check()) {
-            return redirect(self::loginRoute() . '?next=' . rawurlencode(self::currentPath($request)));
+            return self::protect(redirect(self::loginRoute() . '?next=' . rawurlencode(self::currentPath($request))));
         }
 
         try {
@@ -48,7 +48,7 @@ final class AuthorizeController
             return self::fail($e);
         }
 
-        return response(Views::render('oauth.consent', [
+        return self::protect(response(Views::render('oauth.consent', [
             'consent' => $consent,
             'service' => (string) config('oauth_server:name'),
 
@@ -57,13 +57,13 @@ final class AuthorizeController
             // the first. Nothing is stored for it: the value is derived, and the
             // session id it is derived from never leaves the server.
             'csrf' => self::formToken($consent->requestId),
-        ]));
+        ])));
     }
 
     public function decide(): ResponseInterface
     {
-        // The CSRF token on this form is checked by naf/form before we get here;
-        // this endpoint is deliberately not among the exempt ones.
+        // This route is exempt from the generic form check: its HMAC below is
+        // bound to this consent request and session, including parallel forms.
         auth()->requireLogin();
 
         $requestId = param()->get('request_id');
@@ -82,9 +82,9 @@ final class AuthorizeController
         $arguments     = [$requestId, session_id(), (string) auth()->providerName(), (string) auth()->id()];
 
         try {
-            return redirect(param()->get('approve') !== null
+            return self::protect(redirect(param()->get('approve') !== null
                 ? $authorization->approve(...$arguments)
-                : $authorization->deny(...$arguments));
+                : $authorization->deny(...$arguments)));
         } catch (OAuthError $e) {
             return self::fail($e);
         }
@@ -103,14 +103,24 @@ final class AuthorizeController
         $target = $e->redirectTarget();
 
         if ($target !== null) {
-            return redirect($target);
+            return self::protect(redirect($target));
         }
 
-        return response(Views::render('oauth.error', [
+        return self::protect(response(Views::render('oauth.error', [
             'error'       => $e->error,
             'description' => $e->description,
             'service'     => (string) config('oauth_server:name'),
-        ]), $e->status);
+        ]), $e->status));
+    }
+
+    private static function protect(ResponseInterface $response): ResponseInterface
+    {
+        return $response
+            ->withHeader('Cache-Control', 'no-store')
+            ->withHeader('Pragma', 'no-cache')
+            ->withHeader('Referrer-Policy', 'no-referrer')
+            ->withHeader('X-Frame-Options', 'DENY')
+            ->withHeader('Content-Security-Policy', "frame-ancestors 'none'");
     }
 
     /**

@@ -11,8 +11,8 @@ return [
      * A map rather than a list, so that several plugins can contribute without
      * overwriting one another — and so an application can switch one back on.
      *
-     * /oauth/authorize is deliberately absent: approving is a state-changing POST
-     * made by a person, and it keeps its CSRF token like every other form.
+     * Consent uses its own request-bound CSRF HMAC; see the explicit exception
+     * below. It remains a protected state-changing browser POST.
      */
     'csrf_exempt_routes' => [
         'oauth.token'         => true,

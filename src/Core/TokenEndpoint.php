@@ -9,6 +9,7 @@ use Naf\OAuth\Server\Model\Client;
 use Naf\OAuth\Server\Model\IssuedTokens;
 use Naf\OAuth\Server\Store\ResourceTokenStoreInterface;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
+use Naf\OAuth\Server\Support\Pkce;
 
 /**
  * The token, revocation and introspection endpoints.
@@ -138,8 +139,8 @@ final readonly class TokenEndpoint
 
         $verifier = self::text($body, 'code_verifier');
 
-        if ($verifier === null) {
-            throw OAuthError::refuse('invalid_request', 'The request carries no code_verifier.');
+        if ($verifier === null || !Pkce::validVerifier($verifier)) {
+            throw OAuthError::refuse('invalid_request', 'PKCE requires a code_verifier of 43–128 unreserved ASCII characters.');
         }
 
         $redirectUri = self::text($body, 'redirect_uri');

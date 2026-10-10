@@ -31,7 +31,7 @@ use Tests\Fixtures\Schema;
 final class OpenIdTest extends TestCase
 {
     private const string ISSUER   = 'https://id.example.test';
-    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
+    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-xxxx';
     private const string REDIRECT = 'https://intranet.example.test/callback';
 
     private static ?string $pem = null;

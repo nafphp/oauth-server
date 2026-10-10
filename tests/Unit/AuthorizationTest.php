@@ -17,7 +17,7 @@ use Tests\Fixtures\Schema;
 /** Checking the request, asking the person, issuing the code — and in that order. */
 final class AuthorizationTest extends TestCase
 {
-    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
+    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-xxxx';
     private const string REDIRECT = 'https://intranet.example.test/callback';
 
     private PDO $connection;

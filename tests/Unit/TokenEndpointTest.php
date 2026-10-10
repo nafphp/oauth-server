@@ -18,7 +18,7 @@ use Tests\Fixtures\Schema;
 /** The grants, and who may ask for them. */
 final class TokenEndpointTest extends TestCase
 {
-    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-x';
+    private const string VERIFIER = 'a-verifier-long-enough-to-be-one-43-chars-xxxx';
     private const string REDIRECT = 'https://intranet.example.test/callback';
 
     private PDO $connection;
