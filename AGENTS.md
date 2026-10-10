@@ -1,5 +1,10 @@
 # Working on naf/oauth-server
 
+The conventional `/.well-known/oauth-authorization-server` route also serves OAuth-only
+metadata without signing keys. Resource-bound authorization-code exchanges use the additive
+`ResourceTokenStoreInterface`; custom adapters must validate the requested audience while
+atomically claiming the code. Keep existing `TokenStoreInterface` signatures compatible.
+
 NAF is a small PHP framework with optional Composer plugins. Its core owns boot,
 configuration, the service container, routing, events and PSR-7 responses. Prefer existing
 NAF helpers, services and extension interfaces; keep application business rules in the host.
