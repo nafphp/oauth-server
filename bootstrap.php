@@ -201,7 +201,7 @@ if (!$container->has(ResourceServer::class)) {
         // The same reload path a session restore takes, and nothing of the session
         // itself: a bearer token never reaches auth()'s own state.
         load: static fn(string $provider, string $id) => auth()->load($provider, $id),
-        request: $container->get(ServerRequestInterface::class),
+        currentRequest: static fn() => $container->get(ServerRequestInterface::class),
         audience: (string) config('oauth_server:audience', ''),
     ));
 }

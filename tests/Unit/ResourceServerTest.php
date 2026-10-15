@@ -39,6 +39,30 @@ final class ResourceServerTest extends TestCase
         self::assertTrue($this->context($issued->accessToken)->can('posts.read'));
     }
 
+    public function testSharedServerSeparatesExplicitAndResolvedRequests(): void
+    {
+        $issued  = $this->tokens->issueForClient($this->client, ['posts.read'], '', 3600);
+        $first   = new ServerRequest('GET', '/api', ['Authorization' => 'Bearer ' . $issued->accessToken]);
+        $current = $first;
+        $server  = new ResourceServer(
+            $this->tokens,
+            new ScopePolicy(['posts.read' => ['permission' => null]]),
+            static fn(): null => null,
+            currentRequest: static function () use (&$current): ServerRequest {
+                return $current;
+            },
+        );
+        $context = $server->context();
+        self::assertTrue($context->active());
+        self::assertSame($context, $server->context(), 'One request reuses its context.');
+
+        $current = new ServerRequest('GET', '/api');
+        self::assertFalse($server->context()->active());
+        self::assertTrue($server->context($first)->active());
+        self::assertFalse($server->context()->active());
+        self::assertFalse($server->context($first->withHeader('Authorization', 'Bearer invalid'))->active());
+    }
+
     public function testATokenGrantedForAnotherApiIsNotAWeakerTokenHereButNoTokenAtAll(): void
     {
         $issued = $this->tokens->issueForClient($this->client, ['posts.read'], 'https://other-api.test', 3600);
