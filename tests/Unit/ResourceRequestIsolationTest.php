@@ -7,6 +7,8 @@ namespace Tests\Unit;
 use Naf\OAuth\Server\Core\ResourceServer;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
 use Nyholm\Psr7\ServerRequest;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Tests\CommandTestCase;
 
 use function Naf\app;
@@ -22,6 +24,7 @@ final class ResourceRequestIsolationTest extends CommandTestCase
             self::markTestSkipped('Supplied-request integration requires naf/framework >= 0.2.12.');
         }
         $this->healthy(withClient: false);
+        app()->container()->set(LoggerInterface::class, new NullLogger());
         [$firstClient]  = $this->register(grants: ['client_credentials']);
         [$secondClient] = $this->register(name: 'Second client', grants: ['client_credentials']);
         $tokens         = app()->container()->get(TokenStoreInterface::class);
