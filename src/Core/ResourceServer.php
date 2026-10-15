@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Naf\OAuth\Server\Core;
 
 use Closure;
+use LogicException;
 use Naf\Auth\Identity\IdentityInterface;
 use Naf\OAuth\Server\Store\TokenStoreInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Turns the Authorization header of this request into what it allows.
@@ -20,28 +21,36 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 final class ResourceServer
 {
-    private ?TokenContext $context = null;
+    private ?TokenContext $context            = null;
+    private ?RequestInterface $contextRequest = null;
 
     /**
      * @param Closure(string, string): ?IdentityInterface $load
      * @param string $audience What this API is called. Empty means the issuing server's own API.
+     * @param (Closure(): RequestInterface)|null $currentRequest Resolves the active request in shared services.
      */
     public function __construct(
         private readonly TokenStoreInterface $tokens,
         private readonly ScopePolicy $policy,
         private readonly Closure $load,
-        private readonly ServerRequestInterface $request,
+        private readonly ?RequestInterface $request = null,
         private readonly string $audience = '',
+        private readonly ?Closure $currentRequest = null,
     ) {
     }
 
-    public function context(): TokenContext
+    public function context(?RequestInterface $request = null): TokenContext
     {
-        if ($this->context !== null) {
+        $request ??= $this->currentRequest !== null ? ($this->currentRequest)() : $this->request;
+        if ($request === null) {
+            throw new LogicException('ResourceServer requires a request or a current-request resolver.');
+        }
+
+        if ($this->context !== null && $this->contextRequest === $request) {
             return $this->context;
         }
 
-        $bearer = self::bearer($this->request->getHeaderLine('Authorization'));
+        $bearer = self::bearer($request->getHeaderLine('Authorization'));
         $record = $bearer === null ? null : $this->tokens->inspect($bearer);
 
         // A token says which API it is for. One granted for a different API is
@@ -50,7 +59,10 @@ final class ResourceServer
             $record = null;
         }
 
-        return $this->context = new TokenContext($record, $this->policy, $this->load);
+        $context              = new TokenContext($record, $this->policy, $this->load);
+        $this->contextRequest = $request;
+
+        return $this->context = $context;
     }
 
     private static function bearer(string $header): ?string
